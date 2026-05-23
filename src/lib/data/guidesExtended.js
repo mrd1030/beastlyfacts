@@ -240,4 +240,31 @@ export const guidesExtended = [
       checklist: ["100+ gallon enclosure (or pond)", "Powerful canister filter (2–3x tank volume)", "Large basking platform", "Strong UVB bulb (T5 HO)", "Basking heat lamp (85–95°F)", "Water heater (75–80°F)", "Commercial turtle pellets", "Dark leafy greens", "Water quality test kit", "Aquarium vacuum for substrate cleaning"],
     },
   },
+  {
+  id: "rabbit",
+  name: "Rabbit",
+  emoji: "🐰",
+  difficulty: "Beginner",
+  petType: "Lagomorph",
+  tagline: "The gentle, litter-trainable companion that loves to binky!",
+  funFact: "Rabbits can jump up to 4 feet high and run up to 25 mph — they're surprisingly athletic athletes!",
+  sections: {
+    housing: "Minimum 8–10 square feet of floor space for one rabbit (larger is always better). Use an exercise pen or multi-level condo with solid flooring. Never use wire-bottom cages — they cause sore hocks. Provide a litter box with hay, a cozy hideout, and safe chew toys.",
+    diet: "80–90% of the diet should be unlimited grass hay (Timothy, Orchard, or Meadow). Supplement with 1/8–1/4 cup of high-quality pellets per day and 1–2 cups of fresh leafy greens (romaine, parsley, cilantro, dandelion). Treats like carrots and fruit should be very limited.",
+    enrichment: "Rabbits need daily exercise outside their enclosure. Provide tunnels, cardboard boxes, digging boxes with shredded paper, and safe chew toys (apple wood, willow). They love puzzle feeders and can be litter-trained like cats.",
+    health: "Watch for GI stasis (lethargy + small/no poop), dental overgrowth (drooling, weight loss), and fly strike (especially in summer). Spaying/neutering is strongly recommended to prevent uterine cancer in females. Annual vet visits with a rabbit-savvy vet are essential.",
+    checklist: [
+      "Minimum 8 sq ft enclosure or exercise pen",
+      "Grass hay (Timothy or Orchard) — unlimited",
+      "High-quality rabbit pellets (1/8–1/4 cup daily)",
+      "Fresh leafy greens (romaine, parsley, cilantro)",
+      "Litter box + litter (paper-based or aspen)",
+      "Coconut fiber or safe bedding",
+      "Multiple hideouts and tunnels",
+      "Safe chew toys (apple wood, willow, cardboard)",
+      "Nail clippers and styptic powder",
+      "Rabbit-savvy veterinarian contact"
+    ],
+  },
+},
 ];
