@@ -1,25 +1,47 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ArrowLeft, Clock, Tag, Send, Check, X } from 'lucide-react';
-import { blogPosts, blogCategories } from '@/lib/data/newsletters';
-import confetti from 'canvas-confetti';
+import React, { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowLeft, Clock, Tag } from 'lucide-react';
+import { client } from '@/lib/sanity';
+import groq from 'groq';
+import { PortableText } from '@portabletext/react';
+import { blogPosts as localPosts } from '@/lib/data/newsletters'; // ← Your original local articles
 
 export default function Blog() {
+  const [sanityPosts, setSanityPosts] = useState([]);
   const [activeCategory, setActiveCategory] = useState('All');
   const [selectedPost, setSelectedPost] = useState(null);
-  const [email, setEmail] = useState('');
-  const [subscribed, setSubscribed] = useState(false);
 
-  const filtered = blogPosts.filter(p =>
+  // Fetch from Sanity
+  useEffect(() => {
+    const query = groq`*[_type == "post" && defined(slug.current)] | order(publishedAt desc) {
+      _id,
+      title,
+      slug,
+      excerpt,
+      "mainImage": mainImage.asset->url,
+      publishedAt,
+      category,
+      tags,
+      body
+    }`;
+
+    client.fetch(query).then(setSanityPosts);
+  }, []);
+
+  // Combine Sanity + Local posts
+  const allPosts = [
+    ...sanityPosts,
+    ...localPosts.map(post => ({
+      ...post,
+      _id: post.id,           // Convert id to _id for consistency
+      publishedAt: post.date, // Use date as publishedAt
+      mainImage: null         // Local posts don't have images from Sanity
+    }))
+  ];
+
+  const filtered = allPosts.filter(p =>
     activeCategory === 'All' || p.category === activeCategory
   );
-
-  const handleSubscribe = (e) => {
-    e.preventDefault();
-    if (!email) return;
-    setSubscribed(true);
-    confetti({ particleCount: 100, spread: 70, origin: { y: 0.7 }, colors: ['#FF8C42', '#00B8A9', '#FFD93D'] });
-  };
 
   if (selectedPost) {
     return <PostView post={selectedPost} onBack={() => setSelectedPost(null)} />;
@@ -36,25 +58,25 @@ export default function Blog() {
               The Critter Digest
             </h1>
             <p className="text-sm text-muted-foreground font-body max-w-lg">
-              In-depth reptile and exotic pet guides, care tips, and husbandry deep-dives. Updated regularly.
+              In-depth reptile and exotic pet guides, care tips, and husbandry deep-dives.
             </p>
           </motion.div>
 
           {/* Category filter */}
           <div className="flex flex-wrap gap-2 mt-5">
-            {blogCategories.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setActiveCategory(cat)}
-                className={`px-3 py-1.5 rounded-full text-xs font-display font-semibold transition-all ${
-                  activeCategory === cat
-                    ? 'bg-secondary text-secondary-foreground'
-                    : 'bg-card border border-border text-muted-foreground hover:text-foreground'
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
+            {['All', 'Care Tips', 'Reptiles', 'Husbandry'].map(cat => (
+  <button
+    key={cat}
+    onClick={() => setActiveCategory(cat)}
+    className={`px-3 py-1.5 rounded-full text-xs font-display font-semibold transition-all ${
+      activeCategory === cat
+        ? 'bg-secondary text-secondary-foreground'
+        : 'bg-card border border-border text-muted-foreground hover:text-foreground'
+    }`}
+  >
+    {cat}
+  </button>
+))}
           </div>
         </div>
       </div>
@@ -65,7 +87,7 @@ export default function Blog() {
           <div className="lg:col-span-2 space-y-4">
             {filtered.map((post, i) => (
               <motion.article
-                key={post.id}
+                key={post._id}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
@@ -73,96 +95,61 @@ export default function Blog() {
                 className="bg-card border border-border rounded-2xl p-5 cursor-pointer hover:border-secondary/40 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
-                  <span className="text-3xl flex-shrink-0">{post.emoji}</span>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
-                        {post.category}
+                        {post.category || 'Article'}
                       </span>
                       <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {post.readTime}
+                        <Clock className="w-3 h-3" /> {new Date(post.publishedAt).toLocaleDateString()}
                       </span>
                     </div>
-                    <h2 className="font-display font-bold text-base text-foreground mb-1.5 group-hover:text-secondary transition-colors leading-snug">
+                    <h2 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-secondary transition-colors">
                       {post.title}
                     </h2>
-                    <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-2">
+                    <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3">
                       {post.excerpt}
                     </p>
-                    <div className="flex flex-wrap gap-1.5 mt-3">
-                      {post.tags.map(tag => (
-                        <span key={tag} className="text-xs text-muted-foreground font-body bg-muted rounded-md px-2 py-0.5">
-                          #{tag}
-                        </span>
-                      ))}
-                    </div>
                   </div>
                 </div>
               </motion.article>
             ))}
-            {filtered.length === 0 && (
-              <div className="text-center py-12">
-                <span className="text-3xl block mb-2">📭</span>
-                <p className="font-display font-bold text-foreground">No posts in this category yet.</p>
-              </div>
-            )}
           </div>
 
           {/* Sidebar */}
           <div className="space-y-5">
-            {/* Subscribe */}
-                      <div className="bg-card border border-border rounded-2xl p-6">
-                          <h3 className="font-display font-bold text-base text-foreground mb-1">
-                              Subscribe — it's free
-                          </h3>
-                          <p className="text-xs text-muted-foreground font-body mb-4">
-                              New articles straight to your inbox. No spam, ever. 🐾
-                          </p>
-
-                          <div className="bg-muted/50 border border-dashed border-border rounded-xl p-8 text-center">
-                              <div className="text-4xl mb-3">🔨</div>
-                              <h4 className="font-display font-bold text-lg mb-2">The Critter Digest is coming soon!</h4>
-                              <p className="text-sm text-muted-foreground">
-                                  We're working hard to get the newsletter ready.<br />
-                                  Subscribe button will be back very soon!
-                              </p>
-                          </div>
-                      </div>
-
-            {/* Recent posts */}
-            <div className="bg-card border border-border rounded-2xl p-5">
-              <h3 className="font-display font-bold text-sm text-foreground mb-3">Recent Articles</h3>
-              <div className="space-y-3">
-                {blogPosts.slice(0, 4).map(post => (
-                  <button
-                    key={post.id}
-                    onClick={() => setSelectedPost(post)}
-                    className="w-full text-left flex items-start gap-2.5 group"
-                  >
-                    <span className="text-lg flex-shrink-0">{post.emoji}</span>
-                    <p className="text-xs font-body text-muted-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
-                      {post.title}
-                    </p>
-                  </button>
-                ))}
+            {/* Subscribe box (keep your original) */}
+            <div className="bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-display font-bold text-base text-foreground mb-1">
+                Subscribe — it's free
+              </h3>
+              <p className="text-xs text-muted-foreground font-body mb-4">
+                New articles straight to your inbox. No spam, ever. 🐾
+              </p>
+              <div className="bg-muted/50 border border-dashed border-border rounded-xl p-8 text-center">
+                <div className="text-4xl mb-3">🔨</div>
+                <h4 className="font-display font-bold text-lg mb-2">The Critter Digest is coming soon!</h4>
+                <p className="text-sm text-muted-foreground">
+                  We're working hard to get the newsletter ready.<br />
+                  Subscribe button will be back very soon!
+                </p>
               </div>
             </div>
 
-            {/* Categories */}
+            {/* Recent Articles */}
             <div className="bg-card border border-border rounded-2xl p-5">
-              <h3 className="font-display font-bold text-sm text-foreground mb-3">Topics</h3>
-              <div className="flex flex-wrap gap-1.5">
-                {blogCategories.slice(1).map(cat => (
+              <h3 className="font-display font-bold text-sm text-foreground mb-3">Recent Articles</h3>
+              <div className="space-y-3">
+                {allPosts.slice(0, 4).map(post => (
                   <button
-                    key={cat}
-                    onClick={() => setActiveCategory(cat)}
-                    className={`text-xs font-display font-semibold px-2.5 py-1 rounded-full transition-all border ${
-                      activeCategory === cat
-                        ? 'bg-secondary text-secondary-foreground border-transparent'
-                        : 'bg-transparent border-border text-muted-foreground hover:text-foreground'
-                    }`}
+                    key={post._id}
+                    onClick={() => setSelectedPost(post)}
+                    className="w-full text-left flex items-start gap-2.5 group"
                   >
-                    {cat}
+                    <span className="text-lg flex-shrink-0">🦎</span>
+                    <p className="text-xs font-body text-muted-foreground group-hover:text-foreground transition-colors leading-snug line-clamp-2">
+                      {post.title}
+                    </p>
                   </button>
                 ))}
               </div>
@@ -174,23 +161,51 @@ export default function Blog() {
   );
 }
 
+// Keep your original PostView (with small update)
 function PostView({ post, onBack }) {
-  // Render markdown-like content
-  const renderContent = (content) => {
-    return content.split('\n\n').map((block, i) => {
-      if (block.startsWith('**') && block.endsWith('**') && !block.slice(2).includes('**')) {
-        return <h3 key={i} className="font-display font-bold text-base text-foreground mt-5 mb-2">{block.slice(2, -2)}</h3>;
+  // For Sanity posts (has body)
+  const sanityComponents = {
+    types: {
+      image: ({ value }) => {
+        if (!value?.asset?.url) return null;
+        return (
+          <img 
+            src={value.asset.url} 
+            alt={value.alt || ''} 
+            className="w-full rounded-xl my-6 shadow-md" 
+          />
+        );
       }
-      // Bold within text
-      const parts = block.split(/(\*\*[^*]+\*\*)/g);
+    },
+    block: {
+      h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground">{children}</h2>,
+      h3: ({ children }) => <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>,
+      normal: ({ children }) => <p className="mb-4 text-[15px] text-muted-foreground leading-relaxed">{children}</p>,
+      blockquote: ({ children }) => (
+        <blockquote className="border-l-4 border-secondary pl-4 italic my-6 text-muted-foreground">{children}</blockquote>
+      )
+    },
+    list: {
+      bullet: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1 text-muted-foreground">{children}</ul>,
+      number: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1 text-muted-foreground">{children}</ol>
+    }
+  };
+
+  // For original local posts (has content)
+  const renderLocalContent = (content) => {
+    return content.split('\n\n').map((block, i) => {
+      const formatted = block.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>');
+      
+      if (block.startsWith('**') && block.endsWith('**') && !block.slice(2).includes('**')) {
+        return <h3 key={i} className="font-display font-bold text-xl mt-8 mb-4 text-foreground">{block.slice(2, -2)}</h3>;
+      }
+      
       return (
-        <p key={i} className="text-sm text-muted-foreground font-body leading-relaxed mb-3">
-          {parts.map((part, j) =>
-            part.startsWith('**') && part.endsWith('**')
-              ? <strong key={j} className="text-foreground font-semibold">{part.slice(2, -2)}</strong>
-              : part
-          )}
-        </p>
+        <p 
+          key={i} 
+          className="mb-4 text-[15px] text-muted-foreground font-body leading-relaxed"
+          dangerouslySetInnerHTML={{ __html: formatted }}
+        />
       );
     });
   };
@@ -209,35 +224,41 @@ function PostView({ post, onBack }) {
           <ArrowLeft className="w-4 h-4" /> Back to Critter Digest
         </button>
 
-        <span className="text-5xl block mb-4">{post.emoji}</span>
+        <span className="text-5xl block mb-4">{post.emoji || '🦎'}</span>
+        
         <div className="flex items-center gap-2 mb-3">
           <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
-            {post.category}
+            {post.category || 'Article'}
           </span>
           <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
-            <Clock className="w-3 h-3" /> {post.readTime}
+            <Clock className="w-3 h-3" /> {new Date(post.publishedAt).toLocaleDateString()}
           </span>
-          <span className="text-xs text-muted-foreground font-body">{post.date}</span>
         </div>
 
-        <h1 className="font-display font-bold text-2xl sm:text-3xl text-foreground mb-4 leading-tight">
+        <h1 className="font-display font-bold text-3xl text-foreground mb-6 leading-tight">
           {post.title}
         </h1>
 
-        <p className="text-sm text-muted-foreground font-body mb-6 leading-relaxed border-l-2 border-secondary pl-3 italic">
+        <p className="text-sm text-muted-foreground font-body mb-8 leading-relaxed border-l-4 border-secondary pl-4 italic">
           {post.excerpt}
         </p>
 
-        <div className="prose-sm max-w-none">
-          {renderContent(post.content)}
-        </div>
+        {post.mainImage && (
+          <img 
+            src={post.mainImage} 
+            alt={post.title}
+            className="w-full rounded-2xl mb-10 shadow-lg"
+          />
+        )}
 
-        <div className="flex flex-wrap gap-1.5 mt-8 pt-6 border-t border-border">
-          {post.tags.map(tag => (
-            <span key={tag} className="text-xs font-body text-muted-foreground bg-muted rounded-md px-2.5 py-1 flex items-center gap-1">
-              <Tag className="w-2.5 h-2.5" /> {tag}
-            </span>
-          ))}
+        <div className="prose max-w-none">
+          {post.body ? (
+            // Sanity post
+            <PortableText value={post.body} components={sanityComponents} />
+          ) : (
+            // Original local post
+            renderLocalContent(post.content)
+          )}
         </div>
       </div>
     </motion.div>
