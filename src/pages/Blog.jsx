@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Clock, Tag, Send, Check, X } from 'lucide-react';
-import { blogPosts, blogCategories } from '@/lib/data/blog';
+import { blogPosts, blogCategories } from '@/lib/data/newsletters';
 import confetti from 'canvas-confetti';
 
 export default function Blog() {
