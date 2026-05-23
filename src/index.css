@@ -1,0 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Nunito:wght@400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-display: 'Fredoka', sans-serif;
+    --font-body: 'Nunito', sans-serif;
+
+    --background: 34 55% 96%;
+    --foreground: 150 40% 10%;
+    --card: 34 40% 98%;
+    --card-foreground: 150 40% 10%;
+    --popover: 34 40% 98%;
+    --popover-foreground: 150 40% 10%;
+    --primary: 150 60% 18%;
+    --primary-foreground: 34 55% 96%;
+    --secondary: 24 100% 63%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 34 30% 92%;
+    --muted-foreground: 150 15% 40%;
+    --accent: 174 100% 36%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 340 82% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 34 25% 88%;
+    --input: 34 25% 88%;
+    --ring: 150 60% 18%;
+    --chart-1: 24 100% 63%;
+    --chart-2: 174 100% 36%;
+    --chart-3: 150 60% 18%;
+    --chart-4: 340 82% 52%;
+    --chart-5: 48 100% 60%;
+    --radius: 0.75rem;
+
+    --sidebar-background: 34 40% 98%;
+    --sidebar-foreground: 150 40% 10%;
+    --sidebar-primary: 150 60% 18%;
+    --sidebar-primary-foreground: 34 55% 96%;
+    --sidebar-accent: 34 30% 92%;
+    --sidebar-accent-foreground: 150 40% 10%;
+    --sidebar-border: 34 25% 88%;
+    --sidebar-ring: 150 60% 18%;
+  }
+
+  .dark {
+    --background: 150 30% 6%;
+    --foreground: 34 40% 95%;
+    --card: 150 25% 10%;
+    --card-foreground: 34 40% 95%;
+    --popover: 150 25% 10%;
+    --popover-foreground: 34 40% 95%;
+    --primary: 174 100% 42%;
+    --primary-foreground: 150 30% 6%;
+    --secondary: 24 100% 63%;
+    --secondary-foreground: 150 30% 6%;
+    --muted: 150 20% 14%;
+    --muted-foreground: 34 20% 60%;
+    --accent: 48 100% 60%;
+    --accent-foreground: 150 30% 6%;
+    --destructive: 340 82% 52%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 150 15% 18%;
+    --input: 150 15% 18%;
+    --ring: 174 100% 42%;
+    --chart-1: 24 100% 63%;
+    --chart-2: 174 100% 50%;
+    --chart-3: 48 100% 60%;
+    --chart-4: 340 82% 60%;
+    --chart-5: 150 60% 40%;
+
+    --sidebar-background: 150 25% 10%;
+    --sidebar-foreground: 34 40% 95%;
+    --sidebar-primary: 174 100% 42%;
+    --sidebar-primary-foreground: 150 30% 6%;
+    --sidebar-accent: 150 20% 14%;
+    --sidebar-accent-foreground: 34 40% 95%;
+    --sidebar-border: 150 15% 18%;
+    --sidebar-ring: 174 100% 42%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ─── Mobile global improvements ─── */
+html, body {
+  overscroll-behavior: none;
+}
+
+/* Safe area support for navbar */
+.navbar-safe-top {
+  padding-top: env(safe-area-inset-top);
+}
+
+/* Utility: suppress text selection on interactive UI only */
+.no-select {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}

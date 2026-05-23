@@ -1,0 +1,138 @@
+export const quizQuestions = [
+  {
+    id: 1,
+    question: "It's Saturday morning — what are you doing?",
+    emoji: "🌅",
+    options: [
+      { text: "Sleeping in until noon 😴", scores: { cat: 2, python: 2 } },
+      { text: "Going on an adventure hike! 🥾", scores: { dog: 2, parrot: 1 } },
+      { text: "Curled up with a good book 📚", scores: { hedgehog: 2, cat: 1 } },
+      { text: "Hosting brunch with all my friends 🥂", scores: { parrot: 2, dog: 1 } },
+    ],
+  },
+  {
+    id: 2,
+    question: "Your ideal living space is...",
+    emoji: "🏠",
+    options: [
+      { text: "Cozy, warm, and full of blankets", scores: { cat: 2, hedgehog: 1 } },
+      { text: "Big, open, and ready for zoomies", scores: { dog: 2, rabbit: 1 } },
+      { text: "Colorful and full of cool stuff", scores: { parrot: 2, gecko: 1 } },
+      { text: "Minimalist and chill", scores: { python: 2, gecko: 1 } },
+    ],
+  },
+  {
+    id: 3,
+    question: "How do you show your friends you love them?",
+    emoji: "💕",
+    options: [
+      { text: "Big hugs and lots of affection", scores: { dog: 2, rabbit: 1 } },
+      { text: "I headbutt them (lovingly, obviously)", scores: { cat: 2 } },
+      { text: "I bring them random gifts", scores: { parrot: 2, hedgehog: 1 } },
+      { text: "I just silently vibe near them", scores: { python: 2, gecko: 1 } },
+    ],
+  },
+  {
+    id: 4,
+    question: "Pick your ideal snack:",
+    emoji: "🍕",
+    options: [
+      { text: "Fresh fruits and veggies 🥗", scores: { rabbit: 2, parrot: 1 } },
+      { text: "Pizza and ALL the toppings 🍕", scores: { dog: 2 } },
+      { text: "Fancy charcuterie board 🧀", scores: { cat: 2, hedgehog: 1 } },
+      { text: "I forget to eat sometimes 🤷", scores: { python: 2, gecko: 1 } },
+    ],
+  },
+  {
+    id: 5,
+    question: "At a party, you're the one who...",
+    emoji: "🎉",
+    options: [
+      { text: "Is the life of the party, talking to everyone!", scores: { parrot: 2, dog: 1 } },
+      { text: "Found the cat/dog and is petting it", scores: { cat: 2, hedgehog: 1 } },
+      { text: "Is doing happy zoomies on the dance floor", scores: { dog: 2, rabbit: 1 } },
+      { text: "Is quietly observing from the cool corner", scores: { python: 2, gecko: 2 } },
+    ],
+  },
+  {
+    id: 6,
+    question: "Your superpower would be...",
+    emoji: "⚡",
+    options: [
+      { text: "Super hearing (I hear EVERYTHING)", scores: { cat: 2, rabbit: 1 } },
+      { text: "Flying! Total freedom 🦅", scores: { parrot: 2 } },
+      { text: "Regeneration (like Wolverine!)", scores: { gecko: 2, python: 1 } },
+      { text: "Super speed (zoom zoom!)", scores: { dog: 2, hedgehog: 1 } },
+    ],
+  },
+  {
+    id: 7,
+    question: "Your friends describe you as...",
+    emoji: "✨",
+    options: [
+      { text: "Loyal and always there for them", scores: { dog: 2, rabbit: 1 } },
+      { text: "Independent but secretly sweet", scores: { cat: 2, hedgehog: 1 } },
+      { text: "Chatty and hilarious", scores: { parrot: 2 } },
+      { text: "Calm, cool, and collected", scores: { python: 2, gecko: 2 } },
+    ],
+  },
+];
+
+export const quizResults = {
+  dog: {
+    name: "Golden Retriever",
+    emoji: "🐕",
+    title: "You're a Golden Retriever!",
+    description: "Loyal, energetic, and everyone's best friend! You light up every room with your infectious enthusiasm and you'd do anything for the people you love. You're the friend who always shows up with snacks and good vibes.",
+    traits: ["Loyal", "Energetic", "Loving", "Social"],
+    color: "bg-orange",
+  },
+  cat: {
+    name: "Cat",
+    emoji: "🐱",
+    title: "You're a Majestic Cat!",
+    description: "Independent, graceful, and secretly a huge softie. You value your alone time but when you love someone, you love HARD. You probably nap a lot and that's okay — you've earned it, royalty.",
+    traits: ["Independent", "Elegant", "Curious", "Affectionate"],
+    color: "bg-hotpink",
+  },
+  parrot: {
+    name: "Parrot",
+    emoji: "🦜",
+    title: "You're a Vibrant Parrot!",
+    description: "Colorful, chatty, and the life of every party! You have opinions about EVERYTHING and you're not afraid to share them. Your energy is contagious and your humor is top-tier.",
+    traits: ["Chatty", "Colorful", "Smart", "Social"],
+    color: "bg-teal",
+  },
+  hedgehog: {
+    name: "Hedgehog",
+    emoji: "🦔",
+    title: "You're a Precious Hedgehog!",
+    description: "A little prickly on the outside but pure sweetness on the inside! You take your time warming up to people, but once you do, you're the most loyal and lovable friend ever.",
+    traits: ["Thoughtful", "Unique", "Gentle", "Observant"],
+    color: "bg-sunny",
+  },
+  rabbit: {
+    name: "Rabbit",
+    emoji: "🐰",
+    title: "You're a Bouncy Bunny!",
+    description: "Full of joy, energy, and random binkies! You find happiness in the little things and spread cheer wherever you go. You're curious about everything and love exploring new things.",
+    traits: ["Joyful", "Curious", "Gentle", "Playful"],
+    color: "bg-forest",
+  },
+  python: {
+    name: "Ball Python",
+    emoji: "🐍",
+    title: "You're a Chill Ball Python!",
+    description: "Cool, calm, and totally unbothered. You don't need drama — you're content just vibing and being your authentic self. People are fascinated by you and your unique energy.",
+    traits: ["Calm", "Patient", "Unique", "Mysterious"],
+    color: "bg-purple-600",
+  },
+  gecko: {
+    name: "Leopard Gecko",
+    emoji: "🦎",
+    title: "You're a Smiling Gecko!",
+    description: "Always smiling, always chill, always adorable! You have a quiet confidence that draws people in. You're low-maintenance but high-personality, and you always look great doing it.",
+    traits: ["Chill", "Cute", "Confident", "Easy-going"],
+    color: "bg-lime-500",
+  },
+};
