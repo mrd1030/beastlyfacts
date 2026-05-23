@@ -18,12 +18,49 @@ export default function GuideDetail() {
   const [activeTab, setActiveTab] = useState('housing');
 
   const handlePrint = () => {
-    const printContent = guide.sections.checklist.map(item => `☐  ${item}`).join('\n');
-    const w = window.open('', '_blank');
-    w.document.write(`<pre style="font-family:sans-serif;font-size:13px;line-height:2.2;padding:24px;">${guide.emoji} ${guide.name} — Care Checklist\n${'─'.repeat(45)}\n\n${printContent}</pre>`);
-    w.document.close();
-    w.print();
-  };
+  const sections = [
+    { title: '🏠 Housing', content: guide.sections.housing },
+    { title: '🥗 Diet', content: guide.sections.diet },
+    { title: '🎮 Enrichment', content: guide.sections.enrichment },
+    { title: '💊 Health', content: guide.sections.health },
+    { title: '✅ Care Checklist', content: guide.sections.checklist.map(item => `☐  ${item}`).join('\n') }
+  ];
+
+  const printHTML = `
+    <html>
+      <head>
+        <title>${guide.emoji} ${guide.name} — Care Guide</title>
+        <style>
+          body { font-family: system-ui, sans-serif; padding: 40px; line-height: 1.6; color: #333; }
+          h1 { font-size: 24px; margin-bottom: 8px; }
+          h2 { font-size: 18px; margin-top: 28px; border-bottom: 2px solid #eee; padding-bottom: 6px; }
+          pre { white-space: pre-wrap; font-family: system-ui, sans-serif; }
+          .section { margin-bottom: 20px; }
+        </style>
+      </head>
+      <body>
+        <h1>${guide.emoji} ${guide.name} — Complete Care Guide</h1>
+        <p style="color: #666; font-size: 14px;">${guide.petType} • ${guide.difficulty} level</p>
+        
+        ${sections.map(section => `
+          <div class="section">
+            <h2>${section.title}</h2>
+            <pre>${section.content}</pre>
+          </div>
+        `).join('')}
+        
+        <div style="margin-top: 40px; font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 12px;">
+          Printed from BeastlyFacts.com • ${new Date().toLocaleDateString()}
+        </div>
+      </body>
+    </html>
+  `;
+
+  const w = window.open('', '_blank');
+  w.document.write(printHTML);
+  w.document.close();
+  w.print();
+};
 
   if (!guide) {
     return (
