@@ -23,34 +23,82 @@ export default function GuideDetail() {
     { title: '🥗 Diet', content: guide.sections.diet },
     { title: '🎮 Enrichment', content: guide.sections.enrichment },
     { title: '💊 Health', content: guide.sections.health },
-    { title: '✅ Care Checklist', content: guide.sections.checklist.map(item => `☐  ${item}`).join('\n') }
   ];
+
+  const checklistHTML = guide.sections.checklist
+    .map(item => `☐  ${item}`)
+    .join('<br>');
 
   const printHTML = `
     <html>
       <head>
         <title>${guide.emoji} ${guide.name} — Care Guide</title>
         <style>
-          body { font-family: system-ui, sans-serif; padding: 40px; line-height: 1.6; color: #333; }
-          h1 { font-size: 24px; margin-bottom: 8px; }
-          h2 { font-size: 18px; margin-top: 28px; border-bottom: 2px solid #eee; padding-bottom: 6px; }
-          pre { white-space: pre-wrap; font-family: system-ui, sans-serif; }
-          .section { margin-bottom: 20px; }
+          @media print {
+            .page-break { 
+              page-break-before: always; 
+              break-before: page;
+            }
+          }
+          body { 
+            font-family: system-ui, -apple-system, sans-serif; 
+            padding: 40px; 
+            line-height: 1.7; 
+            color: #222; 
+            max-width: 800px;
+            margin: 0 auto;
+          }
+          h1 { font-size: 26px; margin-bottom: 6px; }
+          h2 { font-size: 18px; margin-top: 32px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
+          .section { margin-bottom: 24px; }
+          .checklist { 
+            font-size: 14px; 
+            line-height: 2.1; 
+            background: #f8f9fa; 
+            padding: 24px; 
+            border-radius: 12px;
+          }
+          .footer { 
+            margin-top: 50px; 
+            font-size: 11px; 
+            color: #888; 
+            border-top: 1px solid #ddd; 
+            padding-top: 16px; 
+          }
         </style>
       </head>
       <body>
-        <h1>${guide.emoji} ${guide.name} — Complete Care Guide</h1>
-        <p style="color: #666; font-size: 14px;">${guide.petType} • ${guide.difficulty} level</p>
+        <!-- PAGE 1: Main Guide -->
+        <h1>${guide.emoji} ${guide.name}</h1>
+        <p style="color: #555; font-size: 14px; margin-top: -6px;">${guide.petType} • ${guide.difficulty} level</p>
         
+        <p style="font-style: italic; color: #444; margin: 20px 0 30px;">${guide.tagline}</p>
+
         ${sections.map(section => `
           <div class="section">
             <h2>${section.title}</h2>
-            <pre>${section.content}</pre>
+            <div style="white-space: pre-wrap; font-size: 14.5px; color: #333;">
+              ${section.content}
+            </div>
           </div>
         `).join('')}
-        
-        <div style="margin-top: 40px; font-size: 12px; color: #999; border-top: 1px solid #eee; padding-top: 12px;">
+
+        <div class="footer">
           Printed from BeastlyFacts.com • ${new Date().toLocaleDateString()}
+        </div>
+
+        <!-- PAGE 2: Checklist -->
+        <div class="page-break"></div>
+        
+        <h1 style="margin-bottom: 8px;">✅ ${guide.name} Care Checklist</h1>
+        <p style="color: #666; margin-bottom: 24px;">Print this page and check off items as you complete them.</p>
+        
+        <div class="checklist">
+          ${checklistHTML}
+        </div>
+
+        <div class="footer">
+          BeastlyFacts.com — Your source for amazing animal knowledge 🐾
         </div>
       </body>
     </html>
