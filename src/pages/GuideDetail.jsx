@@ -35,70 +35,74 @@ export default function GuideDetail() {
         <title>${guide.emoji} ${guide.name} — Care Guide</title>
         <style>
           @media print {
-            .page-break { 
-              page-break-before: always; 
-              break-before: page;
+            .section { 
+              page-break-inside: avoid; 
+              break-inside: avoid;
+            }
+            .checklist-section {
+              page-break-inside: avoid;
+              break-inside: avoid;
             }
           }
           body { 
             font-family: system-ui, -apple-system, sans-serif; 
-            padding: 40px; 
-            line-height: 1.7; 
+            padding: 32px 40px; 
+            line-height: 1.65; 
             color: #222; 
-            max-width: 800px;
+            max-width: 820px;
             margin: 0 auto;
           }
-          h1 { font-size: 26px; margin-bottom: 6px; }
-          h2 { font-size: 18px; margin-top: 32px; border-bottom: 2px solid #eee; padding-bottom: 8px; }
-          .section { margin-bottom: 24px; }
+          h1 { font-size: 24px; margin-bottom: 4px; }
+          h2 { font-size: 17px; margin-top: 26px; margin-bottom: 10px; border-bottom: 1.5px solid #eee; padding-bottom: 6px; }
+          .section { margin-bottom: 22px; }
           .checklist { 
-            font-size: 14px; 
-            line-height: 2.1; 
+            font-size: 13.5px; 
+            line-height: 2; 
             background: #f8f9fa; 
-            padding: 24px; 
-            border-radius: 12px;
+            padding: 20px 22px; 
+            border-radius: 10px;
+            margin-top: 12px;
           }
           .footer { 
-            margin-top: 50px; 
-            font-size: 11px; 
+            margin-top: 40px; 
+            font-size: 10.5px; 
             color: #888; 
             border-top: 1px solid #ddd; 
-            padding-top: 16px; 
+            padding-top: 14px; 
+          }
+          .tagline {
+            font-style: italic;
+            color: #444;
+            margin: 16px 0 24px;
           }
         </style>
       </head>
       <body>
-        <!-- PAGE 1: Main Guide -->
+        <!-- Header -->
         <h1>${guide.emoji} ${guide.name}</h1>
-        <p style="color: #555; font-size: 14px; margin-top: -6px;">${guide.petType} • ${guide.difficulty} level</p>
-        
-        <p style="font-style: italic; color: #444; margin: 20px 0 30px;">${guide.tagline}</p>
+        <p style="color: #555; font-size: 13.5px; margin-top: -4px;">${guide.petType} • ${guide.difficulty} level</p>
+        <p class="tagline">${guide.tagline}</p>
 
+        <!-- All Sections (no forced breaks between them) -->
         ${sections.map(section => `
           <div class="section">
             <h2>${section.title}</h2>
-            <div style="white-space: pre-wrap; font-size: 14.5px; color: #333;">
+            <div style="white-space: pre-wrap; font-size: 14px; color: #333;">
               ${section.content}
             </div>
           </div>
         `).join('')}
 
-        <div class="footer">
-          Printed from BeastlyFacts.com • ${new Date().toLocaleDateString()}
-        </div>
-
-        <!-- PAGE 2: Checklist -->
-        <div class="page-break"></div>
-        
-        <h1 style="margin-bottom: 8px;">✅ ${guide.name} Care Checklist</h1>
-        <p style="color: #666; margin-bottom: 24px;">Print this page and check off items as you complete them.</p>
-        
-        <div class="checklist">
-          ${checklistHTML}
+        <!-- Checklist -->
+        <div class="checklist-section">
+          <h2>✅ Complete Care Checklist</h2>
+          <div class="checklist">
+            ${checklistHTML}
+          </div>
         </div>
 
         <div class="footer">
-          BeastlyFacts.com — Your source for amazing animal knowledge 🐾
+          Printed from BeastlyFacts.com • ${new Date().toLocaleDateString()} • Keep this guide handy! 🐾
         </div>
       </body>
     </html>
