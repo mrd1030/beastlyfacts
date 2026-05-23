@@ -15,5 +15,9 @@ export default defineConfig({
     navigationNotifier: true,
     analyticsTracker: true,
     visualEditAgent: true
-  }), react(), cloudflare()]
+  }), react(), cloudflare()],
+  server: {
+    middlewareMode: false,
+    historyApiFallback: true
+  }
 });
