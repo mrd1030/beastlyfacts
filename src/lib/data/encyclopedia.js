@@ -46,7 +46,7 @@ export const encyclopediaAnimals = [
   { id: "budgie", name: "Budgie / Parakeet", scientific: "Melopsittacus undulatus", category: "Birds", emoji: "🐦", difficulty: "Beginner", guideId: "budgie", available: true },
   { id: "cockatiel", name: "Cockatiel", scientific: "Nymphicus hollandicus", category: "Birds", emoji: "🦜", difficulty: "Beginner", guideId: null, available: false },
   { id: "conure", name: "Green Cheek Conure", scientific: "Pyrrhura molinae", category: "Birds", emoji: "🦜", difficulty: "Intermediate", guideId: null, available: false },
-  { id: "african-grey", name: "African Grey Parrot", scientific: "Psittacus erithacus", category: "Birds", emoji: "🦜", difficulty: "High", guideId: "affrican-grey", available: true },
+  { id: "african-grey", name: "African Grey Parrot", scientific: "Psittacus erithacus", category: "Birds", emoji: "🦜", difficulty: "High", guideId: "african-grey", available: true },
   { id: "lovebird", name: "Lovebird", scientific: "Agapornis spp.", category: "Birds", emoji: "🐦", difficulty: "Intermediate", guideId: "lovebird", available: true },
 
   // INVERTEBRATES
