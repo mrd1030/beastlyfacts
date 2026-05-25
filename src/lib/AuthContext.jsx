@@ -14,7 +14,6 @@ export const AuthProvider = ({ children }) => {
     // Simulate checking if user is logged in
     const checkAuth = () => {
       setIsLoadingAuth(false);
-      // Set to false for now since we're removing Base44
       setIsAuthenticated(false);
     };
 
