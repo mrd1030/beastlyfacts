@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
-import { client } from '@/lib/sanity';
+import { client } from '@/lib/sanityClient';
 import groq from 'groq';
 import { PortableText } from '@portabletext/react';
 import { blogPosts as localPosts } from '@/lib/data/newsletters'; // ← Your original local articles
+import { urlFor } from '@/lib/sanity';
+import PortableTextImage from '@/components/PortableTextImage';   // ← Add this
 
 export default function Blog() {
   const [sanityPosts, setSanityPosts] = useState([]);
@@ -164,32 +166,41 @@ export default function Blog() {
 // Keep your original PostView (with small update)
 function PostView({ post, onBack }) {
   // For Sanity posts (has body)
-  const sanityComponents = {
-    types: {
-      image: ({ value }) => {
-        if (!value?.asset?.url) return null;
-        return (
-          <img 
-            src={value.asset.url} 
-            alt={value.alt || ''} 
-            className="w-full rounded-xl my-6 shadow-md" 
-          />
-        );
-      }
-    },
-    block: {
-      h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground">{children}</h2>,
-      h3: ({ children }) => <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>,
-      normal: ({ children }) => <p className="mb-4 text-[15px] text-muted-foreground leading-relaxed">{children}</p>,
-      blockquote: ({ children }) => (
-        <blockquote className="border-l-4 border-secondary pl-4 italic my-6 text-muted-foreground">{children}</blockquote>
-      )
-    },
-    list: {
-      bullet: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1 text-muted-foreground">{children}</ul>,
-      number: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1 text-muted-foreground">{children}</ol>
+  const handleInternalImageClick = (slug) => {
+    const foundPost = allPosts.find(p => 
+      p.slug?.current === slug || p.slug === slug
+    );
+    
+    if (foundPost) {
+      setSelectedPost(foundPost);
+    } else {
+      console.warn("Post not found for slug:", slug);
     }
   };
+  
+  const sanityComponents = {
+  types: {
+    // Only ONE image renderer - using the clickable version
+    image: (props) => (
+      <PortableTextImage 
+        {...props} 
+        onPostClick={handleInternalImageClick} 
+      />
+    ),
+  },
+  block: {
+    h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground">{children}</h2>,
+    h3: ({ children }) => <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>,
+    normal: ({ children }) => <p className="mb-4 text-[15px] text-muted-foreground leading-relaxed">{children}</p>,
+    blockquote: ({ children }) => (
+      <blockquote className="border-l-4 border-secondary pl-4 italic my-6 text-muted-foreground">{children}</blockquote>
+    )
+  },
+  list: {
+    bullet: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1 text-muted-foreground">{children}</ul>,
+    number: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1 text-muted-foreground">{children}</ol>
+  }
+};
 
   // For original local posts (has content)
   const renderLocalContent = (content) => {
