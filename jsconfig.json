@@ -18,10 +18,8 @@
   },
   "include": [
     "src/**/*.js",
-    "src/**/*.jsx",
-    "src/**/*.ts",
-    "src/**/*.tsx"
-  ],
+    "src/**/*.jsx"
+, "beastly-facts/initialValueTemplates.js", "beastly-facts/PreviewPane.jsx", "beastly-facts/SplitPreview.jsx"  ],
   "exclude": [
     "node_modules",
     "dist"

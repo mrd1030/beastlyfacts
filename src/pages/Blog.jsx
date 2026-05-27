@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Clock, Tag } from 'lucide-react';
-import { client } from '@/lib/sanityClient';
+import { client } from '@/lib/sanity';                    // ← Fixed import
 import groq from 'groq';
 import { PortableText } from '@portabletext/react';
-import { blogPosts as localPosts } from '@/lib/data/newsletters'; // ← Your original local articles
-import { urlFor } from '@/lib/sanity';
-import PortableTextImage from '@/components/PortableTextImage';   // ← Add this
+import PortableTextRenderer from '@/components/PortableTextRenderer';
+import { blogPosts as localPosts } from '@/lib/data/newsletters';
+import { urlFor } from '@/lib/sanityImage';
 
 export default function Blog() {
   const [sanityPosts, setSanityPosts] = useState([]);
@@ -20,14 +20,15 @@ export default function Blog() {
       title,
       slug,
       excerpt,
-      "mainImage": mainImage.asset->url,
+      mainImage,
       publishedAt,
-      category,
-      tags,
-      body
+      animalType,
+      readTime,
+      body,
+      "category": categories[0]->title
     }`;
 
-    client.fetch(query).then(setSanityPosts);
+    client.fetch(query).then(setSanityPosts).catch(console.error);
   }, []);
 
   // Combine Sanity + Local posts
@@ -35,9 +36,9 @@ export default function Blog() {
     ...sanityPosts,
     ...localPosts.map(post => ({
       ...post,
-      _id: post.id,           // Convert id to _id for consistency
-      publishedAt: post.date, // Use date as publishedAt
-      mainImage: null         // Local posts don't have images from Sanity
+      _id: post.id,
+      publishedAt: post.date,
+      mainImage: null
     }))
   ];
 
@@ -51,7 +52,7 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen">
-      {/* Header */}
+      {/* Header - Unchanged */}
       <div className="bg-gradient-to-b from-secondary/5 to-transparent pt-12 pb-8 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -64,28 +65,28 @@ export default function Blog() {
             </p>
           </motion.div>
 
-          {/* Category filter */}
+          {/* Category filter - Unchanged */}
           <div className="flex flex-wrap gap-2 mt-5">
             {['All', 'Care Tips', 'Reptiles', 'Husbandry'].map(cat => (
-  <button
-    key={cat}
-    onClick={() => setActiveCategory(cat)}
-    className={`px-3 py-1.5 rounded-full text-xs font-display font-semibold transition-all ${
-      activeCategory === cat
-        ? 'bg-secondary text-secondary-foreground'
-        : 'bg-card border border-border text-muted-foreground hover:text-foreground'
-    }`}
-  >
-    {cat}
-  </button>
-))}
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3 py-1.5 rounded-full text-xs font-display font-semibold transition-all ${
+                  activeCategory === cat
+                    ? 'bg-secondary text-secondary-foreground'
+                    : 'bg-card border border-border text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-16">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Posts */}
+          {/* Posts - Unchanged layout */}
           <div className="lg:col-span-2 space-y-4">
             {filtered.map((post, i) => (
               <motion.article
@@ -118,9 +119,9 @@ export default function Blog() {
             ))}
           </div>
 
-          {/* Sidebar */}
+          {/* Sidebar - Unchanged */}
           <div className="space-y-5">
-            {/* Subscribe box (keep your original) */}
+            {/* Subscribe box - Unchanged */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="font-display font-bold text-base text-foreground mb-1">
                 Subscribe — it's free
@@ -138,7 +139,7 @@ export default function Blog() {
               </div>
             </div>
 
-            {/* Recent Articles */}
+            {/* Recent Articles - Unchanged */}
             <div className="bg-card border border-border rounded-2xl p-5">
               <h3 className="font-display font-bold text-sm text-foreground mb-3">Recent Articles</h3>
               <div className="space-y-3">
@@ -163,64 +164,8 @@ export default function Blog() {
   );
 }
 
-// Keep your original PostView (with small update)
+// PostView - Kept your design, fixed logic
 function PostView({ post, onBack }) {
-  // For Sanity posts (has body)
-  const handleInternalImageClick = (slug) => {
-    const foundPost = allPosts.find(p => 
-      p.slug?.current === slug || p.slug === slug
-    );
-    
-    if (foundPost) {
-      setSelectedPost(foundPost);
-    } else {
-      console.warn("Post not found for slug:", slug);
-    }
-  };
-  
-  const sanityComponents = {
-  types: {
-    // Only ONE image renderer - using the clickable version
-    image: (props) => (
-      <PortableTextImage 
-        {...props} 
-        onPostClick={handleInternalImageClick} 
-      />
-    ),
-  },
-  block: {
-    h2: ({ children }) => <h2 className="text-2xl font-bold mt-8 mb-4 text-foreground">{children}</h2>,
-    h3: ({ children }) => <h3 className="text-xl font-semibold mt-6 mb-3 text-foreground">{children}</h3>,
-    normal: ({ children }) => <p className="mb-4 text-[15px] text-muted-foreground leading-relaxed">{children}</p>,
-    blockquote: ({ children }) => (
-      <blockquote className="border-l-4 border-secondary pl-4 italic my-6 text-muted-foreground">{children}</blockquote>
-    )
-  },
-  list: {
-    bullet: ({ children }) => <ul className="list-disc pl-6 my-4 space-y-1 text-muted-foreground">{children}</ul>,
-    number: ({ children }) => <ol className="list-decimal pl-6 my-4 space-y-1 text-muted-foreground">{children}</ol>
-  }
-};
-
-  // For original local posts (has content)
-  const renderLocalContent = (content) => {
-    return content.split('\n\n').map((block, i) => {
-      const formatted = block.replace(/\*\*(.*?)\*\*/g, '<strong class="text-foreground font-semibold">$1</strong>');
-      
-      if (block.startsWith('**') && block.endsWith('**') && !block.slice(2).includes('**')) {
-        return <h3 key={i} className="font-display font-bold text-xl mt-8 mb-4 text-foreground">{block.slice(2, -2)}</h3>;
-      }
-      
-      return (
-        <p 
-          key={i} 
-          className="mb-4 text-[15px] text-muted-foreground font-body leading-relaxed"
-          dangerouslySetInnerHTML={{ __html: formatted }}
-        />
-      );
-    });
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -256,7 +201,7 @@ function PostView({ post, onBack }) {
 
         {post.mainImage && (
           <img 
-            src={post.mainImage} 
+            src={urlFor(post.mainImage).width(800).url()} 
             alt={post.title}
             className="w-full rounded-2xl mb-10 shadow-lg"
           />
@@ -264,11 +209,9 @@ function PostView({ post, onBack }) {
 
         <div className="prose max-w-none">
           {post.body ? (
-            // Sanity post
-            <PortableText value={post.body} components={sanityComponents} />
+            <PortableTextRenderer content={post.body} />
           ) : (
-            // Original local post
-            renderLocalContent(post.content)
+            <div dangerouslySetInnerHTML={{ __html: post.content || post.body || '' }} />
           )}
         </div>
       </div>

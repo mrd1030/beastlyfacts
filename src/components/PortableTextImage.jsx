@@ -1,61 +1,41 @@
-import { urlFor } from '@/lib/sanity';
+import React from 'react';
+import { urlFor } from '../lib/sanityImage';
 
 export default function PortableTextImage({ value, onPostClick }) {
-  if (!value?.asset?._ref) {
-    return null;
-  }
+  if (!value?.asset) return null;
 
-  const { alt, caption, link } = value;
-  const hasLink = link?.urlType !== 'none' && (link?.externalUrl || link?.internalRef);
+  const imageUrl = urlFor(value.asset).width(800).url();
+  const altText = value.alt || value.caption || '';
+  const linkUrl = value.link || value.href || null;
 
-  const ImageElement = (
-    <img 
-      src={urlFor(value).width(600).url()} 
-      alt={alt || 'Pet image'} 
-      className="max-w-300 max-h-[300px] w-full mx-auto object-contain rounded-2xl my-8 shadow-lg" 
-    />
-  );
-
-  // Handle Click
   const handleClick = () => {
-    if (link?.urlType === 'external' && link?.externalUrl) {
-      window.open(link.externalUrl, '_blank');
-    } 
-    else if (link?.urlType === 'internal' && link?.internalRef?.slug?.current && onPostClick) {
-      onPostClick(link.internalRef.slug.current);
+    if (linkUrl) {
+      window.open(linkUrl, '_blank', 'noopener,noreferrer');
+    } else if (onPostClick) {
+      onPostClick(value);
     }
   };
 
-  // Has Link → clickable + hover effect
-  if (hasLink) {
-    return (
-      <div 
-        onClick={handleClick} 
-        className="block group cursor-pointer"
-      >
-        <img 
-          src={urlFor(value).width(600).url()} 
-          alt={alt || 'Pet image'} 
-          className="max-w-300 max-h-[300px] w-full mx-auto object-contain rounded-2xl my-8 shadow-lg hover:scale-105 transition-transform duration-300" 
-        />
-        {caption && (
-          <p className="text-center text-sm text-gray-500 mt-3 italic">
-            {caption}
-          </p>
-        )}
-      </div>
-    );
-  }
+  const ImageElement = (
+    <img
+      src={imageUrl}
+      alt={altText}
+      style={{ maxWidth: '400px', maxHeight: '300px', objectFit: 'contain' }}
+      className={`rounded-2xl shadow-md transition-shadow ${linkUrl ? 'cursor-pointer hover:shadow-xl' : ''}`}
+      onClick={handleClick}
+    />
+  );
 
-  // No Link → plain image, no hover
   return (
-    <figure className="my-8">
-      {ImageElement}
-      {caption && (
-        <figcaption className="text-center text-sm text-gray-500 mt-3 italic">
-          {caption}
-        </figcaption>
+    <figure className="my-8 flex justify-center">
+      {linkUrl ? (
+        <a href={linkUrl} target="_blank" rel="noopener noreferrer">
+          {ImageElement}
+        </a>
+      ) : (
+       ImageElement
       )}
+      {/* NO VISIBLE CAPTION - alt text is still in the img tag for SEO */}
     </figure>
   );
 }
