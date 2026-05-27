@@ -245,10 +245,24 @@ function TriviaQuizSection() {
             </div>
             <p className="text-xs text-muted-foreground font-body mt-2">{Math.round((score / TRIVIA_TOTAL) * 100)}% correct</p>
           </div>
-          <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={handleRestart}
-            className="flex items-center gap-2 mx-auto bg-secondary text-secondary-foreground font-display font-bold text-sm px-6 py-3 rounded-2xl">
-            <RotateCcw className="w-4 h-4" /> Play Again
-          </motion.button>
+          <div className="flex justify-center gap-3">
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              onClick={() => {
+                const text = `I scored ${score}/${TRIVIA_TOTAL} on the BeastlyFacts Animal Origins Trivia! 🌍🏆 Can you beat me?`;
+                if (navigator.share) {
+                  navigator.share({ title: 'BeastlyFacts Trivia', text, url: window.location.href });
+                } else {
+                  navigator.clipboard.writeText(text + ' ' + window.location.href);
+                }
+              }}
+              className="bg-secondary text-secondary-foreground font-display font-bold text-sm px-6 py-3 rounded-2xl flex items-center gap-2">
+              <Share2 className="w-4 h-4" /> Share Score
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} onClick={handleRestart}
+              className="bg-card border border-border text-foreground font-display font-bold text-sm px-6 py-3 rounded-2xl flex items-center gap-2">
+              <RotateCcw className="w-4 h-4" /> Play Again
+            </motion.button>
+          </div>
         </motion.div>
       </div>
     );
