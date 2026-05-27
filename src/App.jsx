@@ -44,6 +44,8 @@ const AuthenticatedApp = () => {
   }
 
   return (
+    <>
+    <AnalyticsTracker />
     <Routes>
       <Route element={<AppLayout />}>
         <Route path="/" element={<Home />} />
@@ -63,6 +65,7 @@ const AuthenticatedApp = () => {
         </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
+    </>
   );
 };
 
@@ -73,7 +76,6 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
             <AuthenticatedApp />
-            <AnalyticsTracker />
             <ScrollToTop />
         </Router>
         <Toaster />

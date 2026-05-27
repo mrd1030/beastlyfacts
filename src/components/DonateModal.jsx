@@ -6,7 +6,6 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2, Heart } from 'lucide-react';
-import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
@@ -26,16 +25,18 @@ export default function DonateModal({ children }) {
 
       const finalAmount = amount === 'custom' ? { custom: customAmount } : amount;
 
-      const response = await base44.functions.invoke('createStripeCheckoutSession', {
-        amount: finalAmount,
-        type: donationType,
+      const res = await fetch(`/api/functions/createStripeCheckoutSession`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: finalAmount, type: donationType }),
       });
+      const data = await res.json();
 
-      if (response.data.sessionId) {
-        const { error } = await stripe.redirectToCheckout({ sessionId: response.data.sessionId });
+      if (data.sessionId) {
+        const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });
         if (error) toast.error(`Error: ${error.message}`);
       } else {
-        toast.error('Failed to create checkout session.');
+        toast.error(data.error || 'Failed to create checkout session.');
       }
     } catch (error) {
       toast.error(`Donation failed: ${error.message || 'An unexpected error occurred.'}`);
