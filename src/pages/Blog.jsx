@@ -49,6 +49,7 @@ export default function Blog() {
     return <PostView post={selectedPost} onBack={() => setSelectedPost(null)} />;
   }
 
+
   return (
     <div className="min-h-screen">
       {/* Header - Unchanged */}
@@ -216,6 +217,14 @@ function LocalPostContent({ content }) {
 
 // PostView
 function PostView({ post, onBack }) {
+  // Intercept browser back button to go back to the list, not previous page
+  React.useEffect(() => {
+    window.history.pushState(null, '', window.location.href);
+    const handlePopState = () => onBack();
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [onBack]);
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}

@@ -49,6 +49,22 @@ export const encyclopediaAnimals = [
   { id: "african-grey", name: "African Grey Parrot", scientific: "Psittacus erithacus", category: "Birds", emoji: "🦜", difficulty: "High", guideId: "african-grey", available: true },
   { id: "lovebird", name: "Lovebird", scientific: "Agapornis spp.", category: "Birds", emoji: "🐦", difficulty: "Intermediate", guideId: "lovebird", available: true },
 
+  // DOGS
+  { id: "labrador", name: "Labrador Retriever", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐶", difficulty: "Beginner", guideId: null, available: false },
+  { id: "golden-retriever", name: "Golden Retriever", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐶", difficulty: "Beginner", guideId: null, available: false },
+  { id: "german-shepherd", name: "German Shepherd", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐕", difficulty: "Intermediate", guideId: null, available: false },
+  { id: "french-bulldog", name: "French Bulldog", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐶", difficulty: "Beginner", guideId: null, available: false },
+  { id: "border-collie", name: "Border Collie", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐕", difficulty: "High", guideId: null, available: false },
+  { id: "siberian-husky", name: "Siberian Husky", scientific: "Canis lupus familiaris", category: "Dogs", emoji: "🐺", difficulty: "High", guideId: null, available: false },
+
+  // CATS
+  { id: "domestic-shorthair", name: "Domestic Shorthair", scientific: "Felis catus", category: "Cats", emoji: "🐱", difficulty: "Beginner", guideId: null, available: false },
+  { id: "maine-coon", name: "Maine Coon", scientific: "Felis catus", category: "Cats", emoji: "🐱", difficulty: "Beginner", guideId: null, available: false },
+  { id: "siamese", name: "Siamese", scientific: "Felis catus", category: "Cats", emoji: "🐱", difficulty: "Intermediate", guideId: null, available: false },
+  { id: "ragdoll", name: "Ragdoll", scientific: "Felis catus", category: "Cats", emoji: "🐱", difficulty: "Beginner", guideId: null, available: false },
+  { id: "bengal", name: "Bengal", scientific: "Felis catus", category: "Cats", emoji: "🐈", difficulty: "Intermediate", guideId: null, available: false },
+  { id: "persian", name: "Persian", scientific: "Felis catus", category: "Cats", emoji: "🐱", difficulty: "Intermediate", guideId: null, available: false },
+
   // INVERTEBRATES
   { id: "tarantula", name: "Tarantula", scientific: "Various", category: "Invertebrates", emoji: "🕷️", difficulty: "Low–Moderate", guideId: null, available: false },
   { id: "praying-mantis", name: "Praying Mantis", scientific: "Various", category: "Invertebrates", emoji: "🦗", difficulty: "Low", guideId: null, available: false },
@@ -69,6 +85,8 @@ export const encyclopediaCategories = [
   { name: "Turtles & Tortoises", emoji: "🐢" },
   { name: "Small Mammals", emoji: "🦔" },
   { name: "Birds", emoji: "🐦" },
+  { name: "Dogs", emoji: "🐶" },
+  { name: "Cats", emoji: "🐱" },
   { name: "Invertebrates", emoji: "🕷️" },
   { name: "Amphibians", emoji: "🐸" },
 ];

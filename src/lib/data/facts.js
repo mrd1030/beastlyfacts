@@ -37,6 +37,30 @@ export const facts = [
   { id: 36, title: "Identical Quadruplets", emoji: "🛡️", animal: "Armadillo", category: "Mammals", fact: "Nine-banded armadillos always give birth to four identical babies from a single egg that splits — nature's own cloning!", image: "🛡️" },
   { id: 37, title: "Frozen But Alive", emoji: "🐸", animal: "Wood Frog", category: "Weird & Wonderful", fact: "Wood frogs can freeze solid during winter — their heart stops, blood stops flowing, and up to 65% of their body water turns to ice! They thaw and hop away in spring.", image: "🐸" },
   { id: 38, title: "Balloon Defense", emoji: "🐡", animal: "Pufferfish", category: "Ocean", fact: "Pufferfish can inflate to three times their normal size when threatened! They also contain a toxin 1,200 times more deadly than cyanide.", image: "🐡" },
+  // Reptile facts from AnimalFacts page
+  { id: 39, title: "Months Without Eating", emoji: "🐍", animal: "Ball Python", category: "Reptiles", fact: "Ball pythons can go months without eating when they're in breeding season — and that's totally normal. It's a natural fasting behavior, not a sign of illness.", image: "🐍" },
+  { id: 40, title: "The Wave of Peace", emoji: "🦎", animal: "Bearded Dragon", category: "Reptiles", fact: "Bearded dragons wave one arm as a submissive gesture to other dragons. It's their version of 'no threat here!' — a polite greeting in dragon language.", image: "🦎" },
+  { id: 41, title: "Tail Fat Reserves", emoji: "🦎", animal: "Leopard Gecko", category: "Reptiles", fact: "Leopard geckos store fat reserves in their thick tails. A skinny tail can signal poor health or stress — a healthy gecko should have a plump, rounded tail.", image: "🦎" },
+  { id: 42, title: "Rediscovered in 1994", emoji: "🦎", animal: "Crested Gecko", category: "Reptiles", fact: "Crested geckos were thought to be extinct until they were rediscovered in 1994 in New Caledonia! They're now one of the most popular gecko species in the hobby.", image: "🦎" },
+  { id: 43, title: "Color = Communication", emoji: "🦎", animal: "Chameleon", category: "Reptiles", fact: "Chameleons don't change color primarily for camouflage — they do it to communicate mood and temperature. Color changes signal stress, excitement, readiness to mate, and more.", image: "🦎" },
+  // Dog facts from AnimalFacts page
+  { id: 44, title: "Three Eyelids", emoji: "🐶", animal: "Dog", category: "Dogs & Cats", fact: "Dogs have three eyelids — a third one called a nictitating membrane helps protect and moisten the eye. You can sometimes spot it when a dog is sleepy!", image: "🐶" },
+  { id: 45, title: "Unique Nose Prints", emoji: "🐶", animal: "Dog", category: "Dogs & Cats", fact: "A dog's nose print is as unique as a human fingerprint. No two are alike! Some kennel clubs have started using nose prints for identification.", image: "🐶" },
+  { id: 46, title: "Dogs Dream Too", emoji: "🐶", animal: "Dog", category: "Dogs & Cats", fact: "Dogs dream just like humans do. Their REM sleep looks remarkably similar to ours — you'll notice twitching paws and little whimpers as they relive their day.", image: "🐶" },
+  { id: 47, title: "Born Blind and Deaf", emoji: "🐶", animal: "Dog", category: "Dogs & Cats", fact: "Puppies are born completely blind and deaf — they rely entirely on smell and touch for their first two weeks of life. Their eyes and ears open around 2 weeks old.", image: "🐶" },
+  { id: 48, title: "Mental Fatigue is Real", emoji: "🐶", animal: "Dog", category: "Dogs & Cats", fact: "Regular mental stimulation is just as tiring for dogs as physical exercise. Puzzle feeders and training sessions work wonders for a calmer, happier pup.", image: "🐶" },
+  // Cat facts from AnimalFacts page
+  { id: 49, title: "Meow is Just for Us", emoji: "🐱", animal: "Cat", category: "Dogs & Cats", fact: "Cats only meow at humans — not at other cats. They invented the meow specifically to communicate with people, and each cat develops its own unique vocabulary.", image: "🐱" },
+  { id: 50, title: "Healing Purr", emoji: "🐱", animal: "Cat", category: "Dogs & Cats", fact: "A cat's purr vibrates at 25–150 Hz, a frequency known to promote bone healing and reduce stress — for both the cat and the human nearby!", image: "🐱" },
+  { id: 51, title: "Always Landing Right", emoji: "🐱", animal: "Cat", category: "Dogs & Cats", fact: "Cats have a specialized collarbone that lets them always land on their feet. It's called the 'righting reflex' and kicks in within milliseconds of a fall.", image: "🐱" },
+  { id: 52, title: "Lactose Intolerant Cats", emoji: "🐱", animal: "Cat", category: "Dogs & Cats", fact: "Adult cats are technically lactose intolerant, despite what cartoons suggest. Skip the milk bowl — it can cause upset stomachs and digestive issues.", image: "🐱" },
+  { id: 53, title: "70% of Life Asleep", emoji: "🐱", animal: "Cat", category: "Dogs & Cats", fact: "Cats spend up to 70% of their lives sleeping — they're crepuscular, most active at dawn and dusk, and conserve energy the rest of the time.", image: "🐱" },
+  // Bird & exotic facts from AnimalFacts page
+  { id: 54, title: "Parrots Need Company", emoji: "🦜", animal: "Parrot", category: "Birds", fact: "Parrots need social interaction daily — isolation can cause feather plucking and behavioral issues. They're highly intelligent birds that thrive on engagement.", image: "🦜" },
+  { id: 55, title: "Rabbits Need Exercise", emoji: "🐰", animal: "Rabbit", category: "Mammals", fact: "Rabbits are not low-maintenance pets. They need at least 3 hours of exercise outside their enclosure every day to stay healthy and mentally stimulated.", image: "🐰" },
+  { id: 56, title: "Guinea Pigs Are Social", emoji: "🐹", animal: "Guinea Pig", category: "Mammals", fact: "Guinea pigs are highly social and should ideally be kept in pairs or small groups. A lone guinea pig can become lonely, anxious, and even depressed.", image: "🐹" },
+  { id: 57, title: "100-Year Commitment", emoji: "🐢", animal: "Tortoise", category: "Reptiles", fact: "Tortoises can live for over 100 years — adopting one is genuinely a lifelong commitment. You may need to include them in your will!", image: "🐢" },
+  { id: 58, title: "Mimics Everything", emoji: "🦜", animal: "Parrot", category: "Birds", fact: "Many exotic birds can mimic not just words but full sentences, tones, and even laughs. Some African Greys have been recorded with vocabularies exceeding 1,000 words.", image: "🦜" },
 ];
 
 export const categories = [
@@ -45,4 +69,5 @@ export const categories = [
   { name: "Reptiles", emoji: "🦎", color: "bg-forest" },
   { name: "Ocean", emoji: "🐬", color: "bg-blue-500" },
   { name: "Weird & Wonderful", emoji: "🦄", color: "bg-hotpink" },
+  { name: "Dogs & Cats", emoji: "🐾", color: "bg-amber-500" },
 ];
