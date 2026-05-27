@@ -6,7 +6,7 @@ import { facts } from '@/lib/data/facts';
 import { useFavoritesCtx } from '@/lib/FavoritesContext';
 import FactCard from '@/components/shared/FactCard';
 import FactModal from '@/components/shared/FactModal';
-import DeleteAccountDialog from '@/components/layout/DeleteAccountDialog';
+import ClearPackDialog from '@/components/layout/ClearPackDialog';
 
 export default function Pack() {
   const { favorites } = useFavoritesCtx();
@@ -68,11 +68,11 @@ export default function Pack() {
 
       <FactModal fact={selectedFact} onClose={() => setSelectedFact(null)} />
 
-      {/* Account settings section */}
+      {/* Pack management section */}
       <div className="mt-16 pt-8 border-t border-border max-w-7xl mx-auto">
-        <h2 className="font-display font-bold text-base text-foreground mb-1">Account</h2>
-        <p className="text-xs text-muted-foreground font-body mb-4">Manage your BeastlyFacts account settings.</p>
-        <DeleteAccountDialog />
+        <h2 className="font-display font-bold text-base text-foreground mb-1">Pack Management</h2>
+        <p className="text-xs text-muted-foreground font-body mb-4">Manage your Beast Pack collection.</p>
+        <ClearPackDialog />
       </div>
     </div>
   );

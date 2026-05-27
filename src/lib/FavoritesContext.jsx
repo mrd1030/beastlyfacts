@@ -22,8 +22,13 @@ export function FavoritesProvider({ children }) {
 
   const isFavorite = (factId) => favorites.includes(factId);
 
+  const clearFavorites = () => {
+    setFavorites([]);
+    localStorage.removeItem('beastly-favorites');
+  };
+
   return (
-    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite }}>
+    <FavoritesContext.Provider value={{ favorites, toggleFavorite, isFavorite, clearFavorites }}>
       {children}
     </FavoritesContext.Provider>
   );

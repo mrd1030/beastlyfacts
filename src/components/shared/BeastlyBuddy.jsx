@@ -23,7 +23,7 @@ export default function BeastlyBuddy() {
   };
 
   return (
-    <div className="fixed bottom-20 md:bottom-4 right-4 z-50">
+    <div className="fixed bottom-16 md:bottom-4 right-4 z-50">
       <AnimatePresence>
         {open && (
           <motion.div
