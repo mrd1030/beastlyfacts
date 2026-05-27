@@ -164,7 +164,58 @@ export default function Blog() {
   );
 }
 
-// PostView - Kept your design, fixed logic
+// Renders local markdown-style content (bold, bullets, headings, paragraphs)
+function LocalPostContent({ content }) {
+  const lines = content.split('\n');
+  const elements = [];
+  let i = 0;
+
+  while (i < lines.length) {
+    const line = lines[i].trim();
+
+    if (!line) { i++; continue; }
+
+    // Bold heading lines like **Title**
+    if (/^\*\*(.+)\*\*$/.test(line)) {
+      const text = line.replace(/^\*\*/, '').replace(/\*\*$/, '');
+      elements.push(
+        <h3 key={i} className="font-display font-bold text-lg text-foreground mt-6 mb-2">{text}</h3>
+      );
+      i++; continue;
+    }
+
+    // Bullet points
+    if (line.startsWith('- ')) {
+      const bullets = [];
+      while (i < lines.length && lines[i].trim().startsWith('- ')) {
+        bullets.push(lines[i].trim().slice(2));
+        i++;
+      }
+      elements.push(
+        <ul key={`ul-${i}`} className="list-disc pl-5 mb-4 space-y-1.5 text-muted-foreground font-body text-sm leading-relaxed">
+          {bullets.map((b, bi) => <li key={bi}>{b}</li>)}
+        </ul>
+      );
+      continue;
+    }
+
+    // Normal paragraph — inline bold support
+    const parts = line.split(/(\*\*[^*]+\*\*)/g).map((part, pi) => {
+      if (/^\*\*(.+)\*\*$/.test(part)) {
+        return <strong key={pi} className="text-foreground font-semibold">{part.slice(2, -2)}</strong>;
+      }
+      return part;
+    });
+    elements.push(
+      <p key={i} className="mb-4 leading-relaxed text-muted-foreground font-body text-sm">{parts}</p>
+    );
+    i++;
+  }
+
+  return <div className="space-y-0">{elements}</div>;
+}
+
+// PostView
 function PostView({ post, onBack }) {
   return (
     <motion.div
@@ -172,7 +223,7 @@ function PostView({ post, onBack }) {
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen"
     >
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-16">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-16 border-x border-border/40" style={{borderColor: 'hsl(var(--border) / 0.35)'}}>
         <button
           onClick={onBack}
           className="flex items-center gap-1.5 text-sm font-display font-semibold text-muted-foreground hover:text-foreground transition-colors mb-6"
@@ -211,7 +262,7 @@ function PostView({ post, onBack }) {
           {post.body ? (
             <PortableTextRenderer content={post.body} />
           ) : (
-            <div dangerouslySetInnerHTML={{ __html: post.content || post.body || '' }} />
+            <LocalPostContent content={post.content || ''} />
           )}
         </div>
       </div>
