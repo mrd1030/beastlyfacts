@@ -15,6 +15,9 @@ import Pack from '@/pages/Pack';
 import Encyclopedia from '@/pages/Encyclopedia';
 import Blog from '@/pages/Blog';
 import GuideDetail from '@/pages/GuideDetail';
+import About from '@/pages/About';
+import Contact from '@/pages/Contact';
+import AnimalFacts from '@/pages/AnimalFacts';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -46,6 +49,9 @@ const AuthenticatedApp = () => {
         <Route path="/blog" element={<Blog />} />
         <Route path="/quiz" element={<Quiz />} />
         <Route path="/pack" element={<Pack />} />
+        <Route path="/about" element={<About />} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/animal-facts" element={<AnimalFacts />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

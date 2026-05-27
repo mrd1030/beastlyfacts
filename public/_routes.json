@@ -1,11 +1,5 @@
 {
   "version": 1,
   "include": ["/*"],
-  "exclude": [
-    "/_static/*",
-    "/static/*",
-    "/assets/*",
-    "/favicon.png",
-    "/manifest.json"
-  ]
+  "exclude": ["/assets/*"]
 }
