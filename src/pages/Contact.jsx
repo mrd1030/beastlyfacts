@@ -39,7 +39,7 @@ export default function Contact() {
         </motion.a>
 
         <motion.a
-          href="https://instagram.com/beastlyfacts"
+          href="https://instagram.com/beastly.facts"
           target="_blank"
           rel="noopener noreferrer"
           initial={{ opacity: 0, y: 16 }}
@@ -53,7 +53,7 @@ export default function Contact() {
           </div>
           <div>
             <p className="font-display font-bold text-base text-foreground group-hover:text-hotpink transition-colors">Instagram</p>
-            <p className="text-sm text-muted-foreground font-body">@beastlyfacts</p>
+            <p className="text-sm text-muted-foreground font-body">@beastly.facts</p>
             <p className="text-xs text-muted-foreground font-body mt-0.5">Daily animal facts & behind-the-scenes 🦎</p>
           </div>
         </motion.a>
