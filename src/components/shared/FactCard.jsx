@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Heart, Share2 } from 'lucide-react';
-import { useFavorites } from '@/lib/hooks/useLocalStorage';
+import { useFavoritesCtx } from '@/lib/FavoritesContext';
 
 export default function FactCard({ fact, index = 0, onOpen }) {
-  const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleFavorite, isFavorite } = useFavoritesCtx();
   const fav = isFavorite(fact.id);
 
   const handleShare = (e) => {

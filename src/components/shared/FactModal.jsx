@@ -1,10 +1,10 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Heart, Share2 } from 'lucide-react';
-import { useFavorites } from '@/lib/hooks/useLocalStorage';
+import { useFavoritesCtx } from '@/lib/FavoritesContext';
 
 export default function FactModal({ fact, onClose }) {
-  const { toggleFavorite, isFavorite } = useFavorites();
+  const { toggleFavorite, isFavorite } = useFavoritesCtx();
   if (!fact) return null;
   const fav = isFavorite(fact.id);
 

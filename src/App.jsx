@@ -4,6 +4,7 @@ import { queryClientInstance } from '@/lib/query-client'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
+import { FavoritesProvider } from '@/lib/FavoritesContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ScrollToTop from './components/ui/ScrollToTop';
 import AppLayout from '@/components/layout/AppLayout';
@@ -18,6 +19,7 @@ import GuideDetail from '@/pages/GuideDetail';
 import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import AnimalFacts from '@/pages/AnimalFacts';
+import TriviaQuiz from '@/pages/TriviaQuiz';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -52,6 +54,7 @@ const AuthenticatedApp = () => {
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/animal-facts" element={<AnimalFacts />} />
+        <Route path="/trivia" element={<TriviaQuiz />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
@@ -61,6 +64,7 @@ const AuthenticatedApp = () => {
 function App() {
   return (
     <AuthProvider>
+      <FavoritesProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
             <AuthenticatedApp />
@@ -68,6 +72,7 @@ function App() {
         </Router>
         <Toaster />
       </QueryClientProvider>
+      </FavoritesProvider>
     </AuthProvider>
   );
 }

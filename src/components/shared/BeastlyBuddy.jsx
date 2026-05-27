@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, Heart } from 'lucide-react';
 import { facts } from '@/lib/data/facts';
+import { useFavoritesCtx } from '@/lib/FavoritesContext';
 
 const greetings = [
   "Hey there, animal friend! 🐾 Want a fun fact?",
@@ -14,6 +15,7 @@ export default function BeastlyBuddy() {
   const [open, setOpen] = useState(false);
   const [currentFact, setCurrentFact] = useState(null);
   const [greeting] = useState(greetings[Math.floor(Math.random() * greetings.length)]);
+  const { toggleFavorite, isFavorite } = useFavoritesCtx();
 
   const getRandomFact = () => {
     const randomFact = facts[Math.floor(Math.random() * facts.length)];
@@ -53,12 +55,20 @@ export default function BeastlyBuddy() {
                   <strong>{currentFact.title}</strong>
                 </p>
                 <p className="text-xs text-muted-foreground mb-3 leading-relaxed">{currentFact.fact}</p>
-                <button
-                  onClick={getRandomFact}
-                  className="w-full bg-secondary text-secondary-foreground font-display font-bold text-sm py-2 rounded-xl hover:opacity-90 transition-opacity"
-                >
-                  🎲 Another One!
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={getRandomFact}
+                    className="flex-1 bg-secondary text-secondary-foreground font-display font-bold text-sm py-2 rounded-xl hover:opacity-90 transition-opacity"
+                  >
+                    🎲 Another!
+                  </button>
+                  <button
+                    onClick={() => toggleFavorite(currentFact.id)}
+                    className={`px-3 py-2 rounded-xl transition-all ${isFavorite(currentFact.id) ? 'bg-pink-100 dark:bg-pink-950' : 'bg-muted hover:bg-muted/80'}`}
+                  >
+                    <Heart className={`w-4 h-4 ${isFavorite(currentFact.id) ? 'fill-hotpink text-hotpink' : 'text-muted-foreground'}`} />
+                  </button>
+                </div>
               </>
             )}
           </motion.div>

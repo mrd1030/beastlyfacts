@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Heart, Trash2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { facts } from '@/lib/data/facts';
-import { useFavorites } from '@/lib/hooks/useLocalStorage';
+import { useFavoritesCtx } from '@/lib/FavoritesContext';
 import FactCard from '@/components/shared/FactCard';
 import FactModal from '@/components/shared/FactModal';
 import DeleteAccountDialog from '@/components/layout/DeleteAccountDialog';
 
 export default function Pack() {
-  const { favorites, toggleFavorite } = useFavorites();
+  const { favorites } = useFavoritesCtx();
   const [selectedFact, setSelectedFact] = useState(null);
 
   const savedFacts = facts.filter(f => favorites.includes(f.id));
