@@ -5,6 +5,7 @@ import EncyclopediaTeaser from '@/components/home/EncyclopediaTeaser';
 import CritterDigestPreview from '@/components/home/CritterDigestPreview';
 import GuideSpotlight from '@/components/home/GuideSpotlight';
 import QuizTeaser from '@/components/home/QuizTeaser';
+import TriviaTeaser from '@/components/home/TriviaTeaser';
 import Newsletter from '@/components/shared/Newsletter';
 import FactModal from '@/components/shared/FactModal';
 
@@ -18,6 +19,7 @@ export default function Home() {
       <EncyclopediaTeaser />
       <CritterDigestPreview />
       <GuideSpotlight />
+      <TriviaTeaser />
       <QuizTeaser />
       <Newsletter />
       <FactModal fact={selectedFact} onClose={() => setSelectedFact(null)} />
