@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowLeft, Clock, Tag } from 'lucide-react';
-import { client } from '@/lib/sanity';                    // ← Fixed import
+import { ArrowLeft, Clock } from 'lucide-react';
+import { client } from '@/lib/sanity';
 import groq from 'groq';
-import { PortableText } from '@portabletext/react';
 import PortableTextRenderer from '@/components/PortableTextRenderer';
 import { blogPosts as localPosts } from '@/lib/data/newsletters';
 import { urlFor } from '@/lib/sanityImage';
