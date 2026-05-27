@@ -5,6 +5,7 @@ import { Menu, X, Moon, Sun, ChevronDown, BookOpen, Search } from 'lucide-react'
 import { useDarkMode, useDailyStreak } from '@/lib/hooks/useLocalStorage';
 import { encyclopediaCategories } from '@/lib/data/encyclopedia';
 import MobileBackButton from './MobileBackButton';
+import DonateButton from '@/components/DonateButton';
 
 const primaryLinks = [
   { to: '/', label: 'Home' },
@@ -168,6 +169,7 @@ export default function Navbar() {
 
           {/* Right controls */}
           <div className="flex items-center gap-1.5">
+            <DonateButton className="hidden md:flex h-8 text-xs px-3 font-display font-bold" />
             {streak > 0 && (
               <motion.div
                 initial={{ scale: 0 }}

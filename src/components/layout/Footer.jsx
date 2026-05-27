@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import SiteCounter from '@/components/shared/SiteCounter';
+import DonateButton from '@/components/DonateButton';
 
 export default function Footer() {
   const year = new Date().getFullYear();
@@ -22,6 +23,9 @@ export default function Footer() {
               For reptile keepers and animal lovers everywhere.
             </p>
             <SiteCounter />
+            <div className="mt-4">
+              <DonateButton className="w-full font-display font-bold" />
+            </div>
           </div>
 
           {/* Explore */}

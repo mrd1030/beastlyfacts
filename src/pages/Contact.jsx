@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Mail, Instagram } from 'lucide-react';
+import DonateButton from '@/components/DonateButton';
 
 export default function Contact() {
   return (
@@ -57,6 +58,14 @@ export default function Contact() {
             <p className="text-xs text-muted-foreground font-body mt-0.5">Daily animal facts & behind-the-scenes 🦎</p>
           </div>
         </motion.a>
+
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.18 }}
+        >
+          <DonateButton className="w-full font-display font-bold" />
+        </motion.div>
 
         <motion.div
           initial={{ opacity: 0, y: 16 }}

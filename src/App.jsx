@@ -20,6 +20,9 @@ import About from '@/pages/About';
 import Contact from '@/pages/Contact';
 import AnimalFacts from '@/pages/AnimalFacts';
 import TriviaQuiz from '@/pages/TriviaQuiz';
+import DonateSuccess from '@/pages/DonateSuccess';
+import DonateCancel from '@/pages/DonateCancel';
+import AnalyticsTracker from '@/components/AnalyticsTracker';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -55,7 +58,9 @@ const AuthenticatedApp = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/animal-facts" element={<AnimalFacts />} />
         <Route path="/trivia" element={<TriviaQuiz />} />
-      </Route>
+        <Route path="/donate/success" element={<DonateSuccess />} />
+        <Route path="/donate/cancel" element={<DonateCancel />} />
+        </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
@@ -68,6 +73,7 @@ function App() {
       <QueryClientProvider client={queryClientInstance}>
         <Router>
             <AuthenticatedApp />
+            <AnalyticsTracker />
             <ScrollToTop />
         </Router>
         <Toaster />
