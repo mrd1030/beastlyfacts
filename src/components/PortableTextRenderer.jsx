@@ -4,6 +4,18 @@ import { urlFor } from '../lib/sanityImage';
 import PortableTextImage from './PortableTextImage';
 
 const components = {
+  marks: {
+    link: ({ children, value }) => (
+      <a
+        href={value?.href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-secondary underline underline-offset-2 hover:text-secondary/80 transition-colors"
+      >
+        {children}
+      </a>
+    ),
+  },
   block: {
     h1: ({ children }) => <h1 className="text-4xl font-bold mt-12 mb-6 text-foreground">{children}</h1>,
     h2: ({ children }) => <h2 className="text-3xl font-semibold mt-10 mb-5 text-foreground">{children}</h2>,
