@@ -16,7 +16,7 @@ function getSessionKey() {
   return key;
 }
 
-export default function PostEngagement({ postId, postTitle }) {
+export default function PostEngagement({ postId, postTitle, postSlug }) {
   const [likeCount, setLikeCount] = useState(0);
   const [hasLiked, setHasLiked] = useState(false);
   const [shared, setShared] = useState(false);
@@ -60,7 +60,7 @@ export default function PostEngagement({ postId, postTitle }) {
   };
 
   const handleShare = async () => {
-    const url = window.location.href;
+    const url = `https://www.beastlyfacts.com/blog?post=${postSlug || postId}`;
     if (navigator.share) {
       try {
         await navigator.share({ title: postTitle, url });

@@ -7,6 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Loader2, Heart } from 'lucide-react';
 import { toast } from 'sonner';
+import { base44 } from '@/api/base44Client';
 
 const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
 
@@ -25,12 +26,11 @@ export default function DonateModal({ children }) {
 
       const finalAmount = amount === 'custom' ? { custom: customAmount } : amount;
 
-      const res = await fetch(`/api/functions/createStripeCheckoutSession`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: finalAmount, type: donationType }),
+      const res = await base44.functions.invoke('createStripeCheckoutSession', {
+        amount: finalAmount,
+        type: donationType,
       });
-      const data = await res.json();
+      const data = res.data;
 
       if (data.sessionId) {
         const { error } = await stripe.redirectToCheckout({ sessionId: data.sessionId });

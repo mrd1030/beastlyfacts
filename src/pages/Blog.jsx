@@ -28,7 +28,17 @@ export default function Blog() {
       "category": categories[0]->title
     }`;
 
-    client.fetch(query).then(setSanityPosts).catch(console.error);
+    client.fetch(query).then(posts => {
+      setSanityPosts(posts);
+      // Open post from URL param ?post=slug
+      const urlParams = new URLSearchParams(window.location.search);
+      const postParam = urlParams.get('post');
+      if (postParam && !selectedPost) {
+        const match = posts.find(p => p.slug?.current === postParam || p._id === postParam)
+          || localPosts.find(p => p.id === postParam);
+        if (match) setSelectedPost({ ...match, _id: match._id || match.id, publishedAt: match.publishedAt || match.date, mainImage: match.mainImage || null });
+      }
+    }).catch(console.error);
   }, []);
 
   // Combine Sanity + Local posts
@@ -46,8 +56,15 @@ export default function Blog() {
     activeCategory === 'All' || p.category === activeCategory
   );
 
+  const handleBack = () => {
+    setSelectedPost(null);
+    const url = new URL(window.location);
+    url.searchParams.delete('post');
+    window.history.replaceState({}, '', url);
+  };
+
   if (selectedPost) {
-    return <PostView post={selectedPost} onBack={() => setSelectedPost(null)} />;
+    return <PostView post={selectedPost} onBack={handleBack} />;
   }
 
 
@@ -95,7 +112,12 @@ export default function Blog() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => setSelectedPost(post)}
+                onClick={() => {
+                  setSelectedPost(post);
+                  const url = new URL(window.location);
+                  url.searchParams.set('post', post.slug?.current || post._id || post.id);
+                  window.history.pushState({}, '', url);
+                }}
                 className="bg-card border border-border rounded-2xl p-5 cursor-pointer hover:border-secondary/40 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
@@ -147,7 +169,12 @@ export default function Blog() {
                 {allPosts.slice(0, 4).map(post => (
                   <button
                     key={post._id}
-                    onClick={() => setSelectedPost(post)}
+                    onClick={() => {
+                      setSelectedPost(post);
+                      const url = new URL(window.location);
+                      url.searchParams.set('post', post.slug?.current || post._id || post.id);
+                      window.history.pushState({}, '', url);
+                    }}
                     className="w-full text-left flex items-start gap-2.5 group"
                   >
                     <span className="text-lg flex-shrink-0">🦎</span>
@@ -275,7 +302,7 @@ function PostView({ post, onBack }) {
           )}
         </div>
 
-        <PostEngagement postId={post._id || post.id} postTitle={post.title} />
+        <PostEngagement postId={post._id || post.id} postTitle={post.title} postSlug={post.slug?.current || post.id} />
       </div>
     </motion.div>
   );

@@ -3,19 +3,11 @@ import Stripe from 'npm:stripe';
 
 Deno.serve(async (req) => {
     try {
-        const base44 = createClientFromRequest(req);
-        const user = await base44.auth.me();
-
-        if (!user) {
-            return Response.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
         const { amount, type } = await req.json();
 
-        const origin = req.headers.get("origin") || 'https://beastlyfacts.com';
-        const successUrl = `${origin}/donate/success`;
-        const cancelUrl = `${origin}/donate/cancel`;
+        const successUrl = 'https://www.beastlyfacts.com/donate/success';
+        const cancelUrl = 'https://www.beastlyfacts.com/donate/cancel';
 
         let lineItems = [];
 
