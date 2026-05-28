@@ -6,8 +6,8 @@ Deno.serve(async (req) => {
         const stripe = new Stripe(Deno.env.get("STRIPE_SECRET_KEY"));
         const { amount, type } = await req.json();
 
-        const successUrl = 'https://www.beastlyfacts.com/donate/success';
-        const cancelUrl = 'https://www.beastlyfacts.com/donate/cancel';
+        const successUrl = 'https://beastlyfacts.com/donate/success';
+        const cancelUrl = 'https://beastlyfacts.com/donate/cancel';
 
         let lineItems = [];
 
