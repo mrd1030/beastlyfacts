@@ -27,20 +27,23 @@ Deno.serve(async (req) => {
       status: 'pending',
     });
 
-    // Send notification email to site owner
-    const adminEmail = 'hello@beastlyfacts.com';
-    await base44.asServiceRole.integrations.Core.SendEmail({
-      to: adminEmail,
-      from_name: 'Beastly Facts Comments',
-      subject: `New comment pending approval on "${post_title || post_id}"`,
-      body: `A new comment has been submitted and is pending your approval.\n\n` +
-        `Post: ${post_title || post_id}\n` +
-        `Name: ${author_name}\n` +
-        `Email: ${author_email || 'not provided'}\n\n` +
-        `Comment:\n${content}\n\n` +
-        `To approve or reject, log in to your dashboard and manage the BlogComment entity.\n` +
-        `Comment ID: ${comment.id}`
-    });
+    // Try to send notification email (non-blocking — don't fail if email errors)
+    try {
+      await base44.asServiceRole.integrations.Core.SendEmail({
+        to: 'hello@beastlyfacts.com',
+        from_name: 'Beastly Facts Comments',
+        subject: `New comment pending approval on "${post_title || post_id}"`,
+        body: `A new comment has been submitted and is pending your approval.\n\n` +
+          `Post: ${post_title || post_id}\n` +
+          `Name: ${author_name}\n` +
+          `Email: ${author_email || 'not provided'}\n\n` +
+          `Comment:\n${content}\n\n` +
+          `To approve or reject, log in to your dashboard and manage the BlogComment entity.\n` +
+          `Comment ID: ${comment.id}`
+      });
+    } catch (emailErr) {
+      console.warn('Email notification failed (non-fatal):', emailErr.message);
+    }
 
     return Response.json({ success: true, message: 'Comment submitted for moderation!' });
   } catch (error) {
