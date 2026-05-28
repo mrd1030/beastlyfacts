@@ -5,6 +5,7 @@ import { client } from '@/lib/sanity';
 import groq from 'groq';
 import PortableTextRenderer from '@/components/PortableTextRenderer';
 import { blogPosts as localPosts } from '@/lib/data/newsletters';
+import PostEngagement from '@/components/blog/PostEngagement';
 import { urlFor } from '@/lib/sanityImage';
 
 export default function Blog() {
@@ -273,6 +274,8 @@ function PostView({ post, onBack }) {
             <LocalPostContent content={post.content || ''} />
           )}
         </div>
+
+        <PostEngagement postId={post._id || post.id} postTitle={post.title} />
       </div>
     </motion.div>
   );

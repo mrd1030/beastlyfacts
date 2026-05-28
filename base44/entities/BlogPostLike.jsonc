@@ -1,0 +1,18 @@
+{
+  "name": "BlogPostLike",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string",
+      "description": "ID of the blog post"
+    },
+    "session_key": {
+      "type": "string",
+      "description": "Anonymous session identifier so one device = one like"
+    }
+  },
+  "required": [
+    "post_id",
+    "session_key"
+  ]
+}

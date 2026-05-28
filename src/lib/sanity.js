@@ -1,5 +1,5 @@
 // src/lib/sanity.js
-import { createClient } from 'next-sanity'
+import { createClient } from '@sanity/client'
 
 export const client = createClient({
   projectId: '7nqbs1gk',
