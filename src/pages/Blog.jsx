@@ -6,6 +6,8 @@ import groq from 'groq';
 import PortableTextRenderer from '@/components/PortableTextRenderer';
 import { blogPosts as localPosts } from '@/lib/data/newsletters';
 import PostEngagement from '@/components/blog/PostEngagement';
+import BeehiivSubscribe from '@/components/blog/BeehiivSubscribe';
+import PostSidebar from '@/components/blog/PostSidebar';
 import { urlFor } from '@/lib/sanityImage';
 
 export default function Blog() {
@@ -63,8 +65,15 @@ export default function Blog() {
     window.history.replaceState({}, '', url);
   };
 
+  const handleSelectPost = (post) => {
+    setSelectedPost(post);
+    const url = new URL(window.location);
+    url.searchParams.set('post', post.slug?.current || post._id || post.id);
+    window.history.pushState({}, '', url);
+  };
+
   if (selectedPost) {
-    return <PostView post={selectedPost} onBack={handleBack} />;
+    return <PostView post={selectedPost} onBack={handleBack} allPosts={allPosts} onSelectPost={handleSelectPost} />;
   }
 
 
@@ -133,9 +142,14 @@ export default function Blog() {
                     <h2 className="font-display font-bold text-xl text-foreground mb-2 group-hover:text-secondary transition-colors">
                       {post.title}
                     </h2>
-                    <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3">
+                    <p className="text-sm text-muted-foreground font-body leading-relaxed line-clamp-3 mb-2">
                       {post.excerpt}
                     </p>
+                    {post.readTime && (
+                      <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
+                        <Clock className="w-3 h-3" /> {post.readTime} min read
+                      </span>
+                    )}
                   </div>
                 </div>
               </motion.article>
@@ -144,7 +158,7 @@ export default function Blog() {
 
           {/* Sidebar - Unchanged */}
           <div className="space-y-5">
-            {/* Subscribe box - Unchanged */}
+            {/* Subscribe box */}
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="font-display font-bold text-base text-foreground mb-1">
                 Subscribe — it's free
@@ -152,14 +166,7 @@ export default function Blog() {
               <p className="text-xs text-muted-foreground font-body mb-4">
                 New articles straight to your inbox. No spam, ever. 🐾
               </p>
-              <div className="bg-muted/50 border border-dashed border-border rounded-xl p-8 text-center">
-                <div className="text-4xl mb-3">🔨</div>
-                <h4 className="font-display font-bold text-lg mb-2">The Critter Digest is coming soon!</h4>
-                <p className="text-sm text-muted-foreground">
-                  We're working hard to get the newsletter ready.<br />
-                  Subscribe button will be back very soon!
-                </p>
-              </div>
+              <BeehiivSubscribe />
             </div>
 
             {/* Recent Articles - Unchanged */}
@@ -244,7 +251,7 @@ function LocalPostContent({ content }) {
 }
 
 // PostView
-function PostView({ post, onBack }) {
+function PostView({ post, onBack, allPosts, onSelectPost }) {
   // Intercept browser back button to go back to the list, not previous page
   React.useEffect(() => {
     window.history.pushState(null, '', window.location.href);
@@ -253,56 +260,76 @@ function PostView({ post, onBack }) {
     return () => window.removeEventListener('popstate', handlePopState);
   }, [onBack]);
 
+  const handleSidebarSelect = (p) => {
+    onSelectPost(p);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       className="min-h-screen"
     >
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 pt-12 pb-16 border-x border-border/40" style={{borderColor: 'hsl(var(--border) / 0.35)'}}>
-        <button
-          onClick={onBack}
-          className="flex items-center gap-1.5 text-sm font-display font-semibold text-muted-foreground hover:text-foreground transition-colors mb-6"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Critter Digest
-        </button>
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 pt-12 pb-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+          {/* Main content */}
+          <div className="lg:col-span-2">
+            <button
+              onClick={onBack}
+              className="flex items-center gap-1.5 text-sm font-display font-semibold text-muted-foreground hover:text-foreground transition-colors mb-6"
+            >
+              <ArrowLeft className="w-4 h-4" /> Back to Critter Digest
+            </button>
 
-        <span className="text-5xl block mb-4">{post.emoji || '🦎'}</span>
-        
-        <div className="flex items-center gap-2 mb-3">
-          <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
-            {post.category || 'Article'}
-          </span>
-          <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
-            <Clock className="w-3 h-3" /> {new Date(post.publishedAt).toLocaleDateString()}
-          </span>
+            <span className="text-5xl block mb-4">{post.emoji || '🦎'}</span>
+
+            <div className="flex items-center gap-2 mb-3 flex-wrap">
+              <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
+                {post.category || 'Article'}
+              </span>
+              <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
+                <Clock className="w-3 h-3" /> {new Date(post.publishedAt).toLocaleDateString()}
+              </span>
+              {post.readTime && (
+                <span className="text-xs text-muted-foreground font-body flex items-center gap-1">
+                  <Clock className="w-3 h-3" /> {post.readTime} min read
+                </span>
+              )}
+            </div>
+
+            <h1 className="font-display font-bold text-3xl text-foreground mb-6 leading-tight">
+              {post.title}
+            </h1>
+
+            <p className="text-sm text-muted-foreground font-body mb-8 leading-relaxed border-l-4 border-secondary pl-4 italic">
+              {post.excerpt}
+            </p>
+
+            {post.mainImage && (
+              <img
+                src={urlFor(post.mainImage).width(800).url()}
+                alt={post.title}
+                className="w-full rounded-2xl mb-10 shadow-lg"
+              />
+            )}
+
+            <div className="prose max-w-none">
+              {post.body ? (
+                <PortableTextRenderer content={post.body} />
+              ) : (
+                <LocalPostContent content={post.content || ''} />
+              )}
+            </div>
+
+            <PostEngagement postId={post._id || post.id} postTitle={post.title} postSlug={post.slug?.current || post.id} />
+          </div>
+
+          {/* Sidebar */}
+          <div className="lg:sticky lg:top-6">
+            <PostSidebar allPosts={allPosts} currentPost={post} onSelectPost={handleSidebarSelect} />
+          </div>
         </div>
-
-        <h1 className="font-display font-bold text-3xl text-foreground mb-6 leading-tight">
-          {post.title}
-        </h1>
-
-        <p className="text-sm text-muted-foreground font-body mb-8 leading-relaxed border-l-4 border-secondary pl-4 italic">
-          {post.excerpt}
-        </p>
-
-        {post.mainImage && (
-          <img 
-            src={urlFor(post.mainImage).width(800).url()} 
-            alt={post.title}
-            className="w-full rounded-2xl mb-10 shadow-lg"
-          />
-        )}
-
-        <div className="prose max-w-none">
-          {post.body ? (
-            <PortableTextRenderer content={post.body} />
-          ) : (
-            <LocalPostContent content={post.content || ''} />
-          )}
-        </div>
-
-        <PostEngagement postId={post._id || post.id} postTitle={post.title} postSlug={post.slug?.current || post.id} />
       </div>
     </motion.div>
   );
