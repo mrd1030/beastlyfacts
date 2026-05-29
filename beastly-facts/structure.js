@@ -1,4 +1,4 @@
-import SplitPreview from './SplitPreview'
+import SplitPreview from '../src/components/SplitPreview'
 
 export const defaultDocumentNode = (S, { schemaType }) => {
   if (schemaType === 'post') {

@@ -77,12 +77,6 @@ export default defineType({
       initialValue: 6,
     }),
     defineField({
-      name: 'includeAffiliateDisclosure',
-      title: 'Include Amazon Affiliate Disclosure?',
-      type: 'boolean',
-      initialValue: true,
-    }),
-    defineField({
       name: 'publishedAt',
       title: 'Published at',
       type: 'datetime',

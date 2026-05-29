@@ -1,23 +1,40 @@
 import React, { useState, useEffect } from 'react';
-import { Moon, Sun } from 'lucide-react';
-import PortableTextRenderer from '@/components/PortableTextRenderer';
-import { urlFor } from '@/lib/sanityImage';
+import PortableTextRenderer from '../components/PortableTextRenderer';
+import { urlFor } from '../lib/sanityImage';
+
+const LIGHT = {
+  bg: '#F8F1E9',
+  fg: '#0D2B1A',
+  muted: '#6B8070',
+  card: '#FDFAF6',
+  border: '#E2D8CC',
+  secondary: '#FF8C42',
+  secondaryBg: 'rgba(255,140,66,0.10)',
+  accent: '#00B8A9',
+};
+
+const DARK = {
+  bg: '#0C1F13',
+  fg: '#F5EFE6',
+  muted: '#8FAF9A',
+  card: '#111F17',
+  border: '#1E3828',
+  secondary: '#FF8C42',
+  secondaryBg: 'rgba(255,140,66,0.12)',
+  accent: '#00D4C3',
+};
 
 export default function SplitPreview(props) {
   const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('splitpreview_dark') === 'true';
+    try { return localStorage.getItem('splitpreview_dark') === 'true'; } catch { return false; }
   });
+
+  const c = isDark ? DARK : LIGHT;
 
   const document = props.document?.displayed || props.document?.draft || props.document;
 
   useEffect(() => {
-    const html = window.document.documentElement;
-    if (isDark) {
-      html.classList.add('dark');
-    } else {
-      html.classList.remove('dark');
-    }
-    localStorage.setItem('splitpreview_dark', String(isDark));
+    try { localStorage.setItem('splitpreview_dark', String(isDark)); } catch {}
   }, [isDark]);
 
   const mainImageUrl = document?.mainImage?.asset
@@ -25,41 +42,80 @@ export default function SplitPreview(props) {
     : document?.mainImage?.asset?.url || null;
 
   return (
-    <div className="min-h-screen overflow-auto bg-background font-body p-6 sm:p-10">
-      <div className="max-w-3xl mx-auto">
+    <div style={{
+      minHeight: '100vh',
+      overflowY: 'auto',
+      backgroundColor: c.bg,
+      fontFamily: "'Nunito', 'Segoe UI', sans-serif",
+      padding: '40px 24px',
+      transition: 'background-color 0.2s, color 0.2s',
+    }}>
+      <div style={{ maxWidth: 700, margin: '0 auto' }}>
 
         {/* Header bar */}
-        <div className="flex items-center justify-between pb-4 mb-8 border-b border-border">
-          <div className="flex items-center gap-3">
-            <div className="w-3 h-3 rounded-full bg-secondary" />
-            <span className="font-display font-bold text-lg text-foreground">Live Preview</span>
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          paddingBottom: 16,
+          marginBottom: 32,
+          borderBottom: `1px solid ${c.border}`,
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 10, height: 10, borderRadius: '50%', backgroundColor: c.secondary }} />
+            <span style={{ fontFamily: "'Fredoka','Nunito',sans-serif", fontWeight: 700, fontSize: 18, color: c.fg }}>
+              Live Preview
+            </span>
           </div>
 
           <button
             onClick={() => setIsDark(d => !d)}
-            className="flex items-center gap-2 text-xs font-display font-semibold text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full border border-border bg-card"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 6,
+              fontSize: 12,
+              fontWeight: 600,
+              color: c.muted,
+              backgroundColor: c.card,
+              border: `1px solid ${c.border}`,
+              borderRadius: 999,
+              padding: '6px 12px',
+              cursor: 'pointer',
+              fontFamily: "'Fredoka','Nunito',sans-serif",
+              transition: 'color 0.15s',
+            }}
           >
-            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            {isDark ? 'Light mode' : 'Dark mode'}
+            {isDark ? '☀️' : '🌙'} {isDark ? 'Light mode' : 'Dark mode'}
           </button>
         </div>
 
         {/* Content */}
         {!document ? (
-          <div className="flex items-center justify-center h-64 text-muted-foreground font-body text-sm">
+          <div style={{
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            height: 240, color: c.muted, fontSize: 14,
+          }}>
             Start writing to see a preview…
           </div>
         ) : (
           <>
             {/* Category + date */}
-            <div className="flex items-center gap-2 mb-3">
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 12 }}>
               {document.category && (
-                <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
+                <span style={{
+                  fontSize: 11, fontWeight: 700,
+                  fontFamily: "'Fredoka','Nunito',sans-serif",
+                  color: c.secondary,
+                  backgroundColor: c.secondaryBg,
+                  padding: '2px 10px',
+                  borderRadius: 999,
+                }}>
                   {document.category}
                 </span>
               )}
               {document.publishedAt && (
-                <span className="text-xs text-muted-foreground font-body">
+                <span style={{ fontSize: 12, color: c.muted }}>
                   {new Date(document.publishedAt).toLocaleDateString()}
                 </span>
               )}
@@ -67,14 +123,29 @@ export default function SplitPreview(props) {
 
             {/* Title */}
             {document.title && (
-              <h1 className="font-display font-bold text-3xl text-foreground mb-6 leading-tight">
+              <h1 style={{
+                fontFamily: "'Fredoka','Nunito',sans-serif",
+                fontWeight: 700,
+                fontSize: 32,
+                color: c.fg,
+                marginBottom: 24,
+                lineHeight: 1.25,
+              }}>
                 {document.title}
               </h1>
             )}
 
             {/* Excerpt */}
             {document.excerpt && (
-              <p className="text-sm text-muted-foreground font-body mb-8 leading-relaxed border-l-4 border-secondary pl-4 italic">
+              <p style={{
+                fontSize: 14,
+                color: c.muted,
+                marginBottom: 32,
+                lineHeight: 1.7,
+                borderLeft: `4px solid ${c.secondary}`,
+                paddingLeft: 16,
+                fontStyle: 'italic',
+              }}>
                 {document.excerpt}
               </p>
             )}
@@ -84,17 +155,23 @@ export default function SplitPreview(props) {
               <img
                 src={mainImageUrl}
                 alt={document.title || 'Post image'}
-                className="w-full rounded-2xl mb-10 shadow-lg"
+                style={{
+                  width: '100%',
+                  borderRadius: 16,
+                  marginBottom: 40,
+                  boxShadow: '0 8px 32px rgba(0,0,0,0.12)',
+                  display: 'block',
+                }}
               />
             )}
 
             {/* Body */}
             {document.body ? (
-              <div className="prose max-w-none">
+              <div style={{ color: c.fg }}>
                 <PortableTextRenderer content={document.body} />
               </div>
             ) : (
-              <p className="text-center text-muted-foreground font-body text-sm py-20">
+              <p style={{ textAlign: 'center', color: c.muted, fontSize: 14, padding: '80px 0' }}>
                 Start writing in the Editor tab to see the preview here…
               </p>
             )}
