@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import PortableTextRenderer from './PortableTextRenderer';
+import PortableTextRenderer from '../src/components/PortableTextRenderer';
 
 export default function SplitPreview(props) {
   const [isDark, setIsDark] = useState(true);
