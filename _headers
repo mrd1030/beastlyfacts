@@ -1,0 +1,2 @@
+/*
+  Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline' https://subscribe-forms.beehiiv.com https://embeds.beehiiv.com; script-src 'self' https://subscribe-forms.beehiiv.com https://embeds.beehiiv.com; img-src 'self' data: https:; connect-src 'self' https://embeds.beehiiv.com https://subscribe-forms.beehiiv.com; frame-src 'self' https://embeds.beehiiv.com;
