@@ -1,99 +1,110 @@
-import React, { useState, useEffect } from 'react';
-import { Moon, Sun } from 'lucide-react';
-import PortableTextRenderer from '@/components/PortableTextRenderer';
-import { urlFor } from '@/lib/sanityImage';
+import React, { useState } from 'react';
+import PortableTextRenderer from '../src/components/PortableTextRenderer';
 
-export default function SplitPreview({ post }) {
-  const [isDark, setIsDark] = useState(() => {
-    return localStorage.getItem('splitpreview_dark') === 'true';
-  });
+export default function SplitPreview(props) {
+  const [isDark, setIsDark] = useState(true);
+  const document = props.document?.displayed || props.document?.draft || props.document;
 
-  useEffect(() => {
-    const html = document.documentElement;
-    if (isDark) {
-      html.classList.add('dark');
-    } else {
-      html.classList.remove('dark');
-    }
-    localStorage.setItem('splitpreview_dark', isDark);
-  }, [isDark]);
+  // Exact colors from your index.css
+  const darkColors = {
+    background: '#0F3A1F',    // Your forest green from tailwind.config.js
+    card: '#0d2e1b',
+    text: '#f5f5f0',          // Off-white from --foreground
+    muted: '#99998f',
+    border: '#1a3a2a',
+    orange: '#FF8C42',
+  };
 
-  const mainImageUrl = post?.mainImage?.asset
-    ? urlFor(post.mainImage).width(800).url()
-    : null;
+  const lightColors = {
+    background: '#F8F1E9',    // Your cream from tailwind.config.js
+    card: '#ffffff',
+    text: '#1a2e1a',          // Dark green from --foreground
+    muted: '#5a6b5a',
+    border: '#d4d0c8',
+    orange: '#FF8C42',
+  };
+
+  const colors = isDark ? darkColors : lightColors;
 
   return (
-    <div className="min-h-screen overflow-auto bg-background font-body p-6 sm:p-10">
-      <div className="max-w-3xl mx-auto">
-
-        {/* Header bar */}
-        <div className="flex items-center justify-between pb-4 mb-8 border-b border-border">
-          <span className="text-xs font-display font-semibold text-muted-foreground uppercase tracking-widest">
-            Preview
-          </span>
+    <div style={{ 
+      height: '100%', 
+      overflow: 'auto', 
+      padding: '40px', 
+      backgroundColor: colors.background,
+      fontFamily: "'Nunito', sans-serif"
+    }}>
+      <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+        
+        {/* Header with Toggle */}
+        <div style={{ 
+          display: 'flex', 
+          alignItems: 'center', 
+          justifyContent: 'space-between',
+          marginBottom: '32px',
+          paddingBottom: '16px',
+          borderBottom: `1px solid ${colors.border}`
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '12px', height: '12px', borderRadius: '50%', backgroundColor: colors.orange }}></div>
+            <h2 style={{ fontSize: '18px', fontWeight: 'bold', color: colors.text, fontFamily: "'Fredoka', sans-serif" }}>
+              Live Preview
+            </h2>
+          </div>
+          
           <button
-            onClick={() => setIsDark(d => !d)}
-            className="flex items-center gap-2 text-xs font-display font-semibold text-muted-foreground hover:text-foreground transition-colors px-3 py-1.5 rounded-full border border-border bg-card"
+            onClick={() => setIsDark(!isDark)}
+            style={{
+              padding: '8px 16px',
+              backgroundColor: colors.card,
+              border: `1px solid ${colors.border}`,
+              borderRadius: '8px',
+              color: colors.text,
+              fontSize: '14px',
+              cursor: 'pointer',
+              fontFamily: "'Nunito', sans-serif"
+            }}
           >
-            {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-            {isDark ? 'Light mode' : 'Dark mode'}
+            {isDark ? '☀️ Light Mode' : '🌙 Dark Mode'}
           </button>
         </div>
 
-        {/* Content */}
-        {!post ? (
-          <div className="flex items-center justify-center h-64 text-muted-foreground font-body text-sm">
-            Start writing to see a preview…
-          </div>
-        ) : (
-          <>
-            {/* Category + date */}
-            <div className="flex items-center gap-2 mb-3">
-              {post.category && (
-                <span className="text-xs font-display font-semibold text-secondary bg-secondary/10 px-2 py-0.5 rounded-full">
-                  {post.category}
-                </span>
-              )}
-              {post.publishedAt && (
-                <span className="text-xs text-muted-foreground font-body">
-                  {new Date(post.publishedAt).toLocaleDateString()}
-                </span>
-              )}
-            </div>
-
-            {/* Title */}
-            <h1 className="font-display font-bold text-3xl text-foreground mb-6 leading-tight">
-              {post.title || 'Untitled'}
-            </h1>
-
-            {/* Excerpt */}
-            {post.excerpt && (
-              <p className="text-sm text-muted-foreground font-body mb-8 leading-relaxed border-l-4 border-secondary pl-4 italic">
-                {post.excerpt}
-              </p>
-            )}
-
-            {/* Main image */}
-            {mainImageUrl && (
-              <img
-                src={mainImageUrl}
-                alt={post.title || 'Post image'}
-                className="w-full rounded-2xl mb-10 shadow-lg"
-              />
-            )}
-
-            {/* Body */}
-            {post.body ? (
-              <div className="prose max-w-none">
-                <PortableTextRenderer content={post.body} />
-              </div>
-            ) : (
-              <p className="text-center text-muted-foreground font-body text-sm">
-                Start writing to see a preview…
-              </p>
-            )}
-          </>
+        {/* Title */}
+        {document?.title && (
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: colors.text, marginBottom: '24px', lineHeight: '1.2', fontFamily: "'Fredoka', sans-serif" }}>
+            {document.title}
+          </h1>
         )}
+
+        {/* Excerpt */}
+        {document?.excerpt && (
+          <div style={{ display: 'flex', gap: '16px', marginBottom: '32px' }}>
+            <div style={{ width: '4px', backgroundColor: colors.orange, borderRadius: '4px' }}></div>
+            <p style={{ color: colors.muted, fontSize: '18px', fontStyle: 'italic', lineHeight: '1.6' }}>
+              {document.excerpt}
+            </p>
+          </div>
+        )}
+
+        {/* Main Image */}
+        {document?.mainImage && (
+          <img 
+            src={document.mainImage.asset?.url} 
+            alt={document.title}
+            style={{ maxWidth: '400px', maxHeight: '400px', objectFit: 'contain', borderRadius: '16px', marginBottom: '40px' }}
+          />
+        )}
+
+        {/* Body Content */}
+        <div style={{ color: colors.text, fontSize: '16px', lineHeight: '1.7' }}>
+          {document?.body ? (
+            <PortableTextRenderer content={document.body} />
+          ) : (
+            <div style={{ textAlign: 'center', padding: '80px 0', color: colors.muted }}>
+              Start writing in the Editor tab to see the preview here...
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
