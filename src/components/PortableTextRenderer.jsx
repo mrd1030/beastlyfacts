@@ -1,5 +1,6 @@
 import React from 'react';
 import { PortableText } from '@portabletext/react';
+import { Info, CheckCircle2, XCircle } from 'lucide-react';
 import { urlFor } from '../lib/sanityImage';
 import PortableTextImage from './PortableTextImage';
 
@@ -29,41 +30,47 @@ const components = {
   },
 
   types: {
-    // Image (using your existing component)
-    image: (props) => <PortableTextImage {...props} />,
+    // Image — pass link and alt explicitly from the block value
+    image: ({ value }) => (
+      <PortableTextImage
+        value={value}
+        link={value?.link || value?.href}
+        alt={value?.alt || value?.caption}
+      />
+    ),
 
     // Amazon Product Recommendation
     productRecommendation: ({ value }) => (
-      <div className="my-10 border border-orange-200 rounded-2xl p-8 bg-white shadow-sm">
-        <div className="flex flex-col md:flex-row gap-8 items-start">
+      <div className="my-10 border border-secondary/20 rounded-2xl p-6 bg-card shadow-sm">
+        <div className="flex flex-col md:flex-row gap-6 items-start">
           {value.image && (
-            <div className="w-full md:w-52 flex-shrink-0">
+            <div className="w-full md:w-48 flex-shrink-0">
               <img
                 src={urlFor(value.image).width(400).url()}
-                alt={value.productName}
-                className="rounded-xl object-cover w-full"
+                alt={value.productName || 'Product image'}
+                className="rounded-xl object-contain w-full"
               />
             </div>
           )}
-
           <div className="flex-1">
-            <h3 className="text-2xl font-bold text-foreground mb-2">{value.productName}</h3>
-            
+            <h3 className="font-display font-bold text-xl text-foreground mb-1">{value.productName}</h3>
             {value.bestFor && (
-              <p className="text-orange-600 font-medium mb-4">{value.bestFor}</p>
+              <p className="text-secondary font-body text-sm font-semibold mb-3">{value.bestFor}</p>
             )}
-
+            {value.description && (
+              <p className="text-sm text-muted-foreground font-body mb-4 leading-relaxed">{value.description}</p>
+            )}
+            {value.priceRange && (
+              <p className="text-lg font-display font-bold text-foreground mb-4">{value.priceRange}</p>
+            )}
             <a
               href={value.affiliateUrl || `https://www.amazon.com/dp/${value.asin}?tag=beastlyfacts-20`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center bg-orange-500 hover:bg-orange-600 text-white px-8 py-3.5 rounded-xl font-semibold transition-all"
+              className="inline-flex items-center bg-secondary hover:bg-secondary/90 text-secondary-foreground px-6 py-2.5 rounded-xl font-display font-semibold text-sm transition-all"
             >
               Check Price on Amazon →
             </a>
-
-            {value.priceRange && <p className="mt-4 text-2xl font-semibold text-foreground">{value.priceRange}</p>}
-            {value.description && <p className="mt-5 text-muted-foreground">{value.description}</p>}
           </div>
         </div>
       </div>
@@ -71,20 +78,24 @@ const components = {
 
     // Pros & Cons
     prosCons: ({ value }) => (
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 my-12">
-        <div className="bg-green-50 border border-green-200 p-8 rounded-2xl">
-          <h4 className="font-bold text-green-700 text-xl mb-6 flex items-center gap-2">✓ Pros</h4>
-          <ul className="space-y-3 text-green-800">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 my-10">
+        <div className="bg-green-50 border border-green-200 p-6 rounded-2xl">
+          <h4 className="font-display font-bold text-green-700 text-lg mb-4 flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5" /> Pros
+          </h4>
+          <ul className="space-y-2.5 font-body text-sm text-green-800">
             {value.pros?.map((item, i) => (
-              <li key={i} className="flex gap-3">• {item}</li>
+              <li key={i} className="flex gap-2 items-start"><span className="mt-0.5">•</span>{item}</li>
             ))}
           </ul>
         </div>
-        <div className="bg-red-50 border border-red-200 p-8 rounded-2xl">
-          <h4 className="font-bold text-red-700 text-xl mb-6 flex items-center gap-2">✗ Cons</h4>
-          <ul className="space-y-3 text-red-800">
+        <div className="bg-red-50 border border-red-200 p-6 rounded-2xl">
+          <h4 className="font-display font-bold text-red-700 text-lg mb-4 flex items-center gap-2">
+            <XCircle className="w-5 h-5" /> Cons
+          </h4>
+          <ul className="space-y-2.5 font-body text-sm text-red-800">
             {value.cons?.map((item, i) => (
-              <li key={i} className="flex gap-3">• {item}</li>
+              <li key={i} className="flex gap-2 items-start"><span className="mt-0.5">•</span>{item}</li>
             ))}
           </ul>
         </div>
@@ -124,8 +135,12 @@ const components = {
 
     // Affiliate Disclosure
     affiliateDisclosure: ({ value }) => (
-      <div className="my-8 p-6 bg-amber-50 border-l-4 border-amber-400 rounded-r-xl text-sm text-amber-800">
-        {value.text}
+      <div className="my-8 p-5 bg-amber-50 border border-amber-200 border-l-4 border-l-amber-400 rounded-r-2xl flex gap-3 items-start">
+        <Info className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
+        <p className="text-sm text-amber-800 font-body leading-relaxed">
+          <span className="font-semibold font-display">Affiliate Disclosure: </span>
+          {value.text || 'This post may contain affiliate links. We may earn a commission if you make a purchase through these links at no extra cost to you.'}
+        </p>
       </div>
     ),
   },

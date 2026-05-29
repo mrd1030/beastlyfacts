@@ -1,28 +1,18 @@
 import React from 'react';
 import { urlFor } from '../lib/sanityImage';
 
-export default function PortableTextImage({ value, onPostClick }) {
+export default function PortableTextImage({ value, link, alt, onPostClick }) {
   if (!value?.asset) return null;
 
   const imageUrl = urlFor(value.asset).width(800).url();
-  const altText = value.alt || value.caption || '';
-  const linkUrl = value.link || value.href || null;
+  const altText = alt || value.alt || value.caption || 'Blog image';
+  const linkUrl = link || value.link || value.href || null;
 
-  const handleClick = () => {
-    if (linkUrl) {
-      window.open(linkUrl, '_blank', 'noopener,noreferrer');
-    } else if (onPostClick) {
-      onPostClick(value);
-    }
-  };
-
-  const ImageElement = (
+  const imageEl = (
     <img
       src={imageUrl}
       alt={altText}
-      style={{ maxWidth: '400px', maxHeight: '300px', objectFit: 'contain' }}
-      className={`rounded-2xl shadow-md transition-shadow ${linkUrl ? 'cursor-pointer hover:shadow-xl' : ''}`}
-      onClick={handleClick}
+      className={`rounded-2xl shadow-md w-full max-w-lg max-h-80 object-contain transition-shadow ${linkUrl ? 'cursor-pointer hover:shadow-xl' : ''}`}
     />
   );
 
@@ -30,12 +20,11 @@ export default function PortableTextImage({ value, onPostClick }) {
     <figure className="my-8 flex justify-center">
       {linkUrl ? (
         <a href={linkUrl} target="_blank" rel="noopener noreferrer">
-          {ImageElement}
+          {imageEl}
         </a>
       ) : (
-       ImageElement
+        imageEl
       )}
-      {/* NO VISIBLE CAPTION - alt text is still in the img tag for SEO */}
     </figure>
   );
 }
