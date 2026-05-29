@@ -9,7 +9,7 @@ export default function BeehiivSubscribe() {
       </div>
 
       {/* Official Beehiiv Embed */}
-      <div data-beehiiv-form="3e7bc205-739d-43a2-8468-7718e54540f5"></div>
+      <script async src="https://subscribe-forms.beehiiv.com/v3/loader.js" data-beehiiv-form="3e7bc205-739d-43a2-8468-7718e54540f5"></script>
 
       <p className="text-[10px] text-center text-zinc-500 mt-4">
         No spam. Unsubscribe anytime.
