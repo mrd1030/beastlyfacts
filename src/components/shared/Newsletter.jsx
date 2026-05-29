@@ -1,46 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { Send, Check, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import confetti from 'canvas-confetti';
+import BeehiivSubscribe from '@/components/blog/BeehiivSubscribe';
 
 export default function Newsletter() {
-    const [email, setEmail] = useState('');
-    const [subscribed, setSubscribed] = useState(false);
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-
-        if (!email) return;
-
-        try {
-            const formData = new FormData();
-            formData.append('fields[email]', email);
-            formData.append('ml-submit', '1');
-            formData.append('anticsrf', 'true');
-
-            // Submit to MailerLite
-            await fetch('https://assets.mailerlite.com/jsonp/2372560/forms/188211000791533545/subscribe', {
-                method: 'POST',
-                body: formData,
-            });
-
-            // Show success
-            setSubscribed(true);
-            setEmail(''); // Clear input
-
-            confetti({
-                particleCount: 120,
-                spread: 80,
-                origin: { y: 0.7 },
-                colors: ['#FF8C42', '#00B8A9', '#FFD93D', '#E8336D']
-            });
-
-        } catch (error) {
-            console.error('Subscription error:', error);
-            alert("Something went wrong. Please try again.");
-        }
-    };
 
     return (
         <section className="py-14 px-4 sm:px-6">
@@ -93,15 +57,7 @@ export default function Newsletter() {
                             <p className="text-xs text-muted-foreground font-body mb-4">
                                 New articles straight to your inbox. No spam, ever. 🐾
                             </p>
-
-                            <div className="bg-muted/50 border border-dashed border-border rounded-xl p-8 text-center">
-                                <div className="text-4xl mb-3">🔨</div>
-                                <h4 className="font-display font-bold text-lg mb-2">The Critter Digest is coming soon!</h4>
-                                <p className="text-sm text-muted-foreground">
-                                    We're working hard to get the newsletter ready.<br />
-                                    Subscribe button will be back very soon!
-                                </p>
-                            </div>
+                            <BeehiivSubscribe />
                         </div>
                         
                     </div>

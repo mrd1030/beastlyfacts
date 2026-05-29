@@ -14,10 +14,10 @@ export default function PostSidebar({ allPosts, currentPost, onSelectPost }) {
     return pool.slice(0, 5);
   }, [allPosts, currentPost]);
 
-  // Random fact
+  // Random fact — changes every time currentPost changes
   const randomFact = useMemo(() => {
     return facts[Math.floor(Math.random() * facts.length)];
-  }, []);
+  }, [currentPost._id || currentPost.id]);
 
   return (
     <div className="space-y-5">
