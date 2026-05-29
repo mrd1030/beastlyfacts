@@ -67,6 +67,7 @@ export default function Blog() {
 
   const handleSelectPost = (post) => {
     setSelectedPost(post);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     const url = new URL(window.location);
     url.searchParams.set('post', post.slug?.current || post._id || post.id);
     window.history.pushState({}, '', url);
@@ -121,12 +122,7 @@ export default function Blog() {
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
-                onClick={() => {
-                  setSelectedPost(post);
-                  const url = new URL(window.location);
-                  url.searchParams.set('post', post.slug?.current || post._id || post.id);
-                  window.history.pushState({}, '', url);
-                }}
+                onClick={() => handleSelectPost(post)}
                 className="bg-card border border-border rounded-2xl p-5 cursor-pointer hover:border-secondary/40 hover:shadow-md transition-all group"
               >
                 <div className="flex items-start gap-4">
@@ -176,12 +172,7 @@ export default function Blog() {
                 {allPosts.slice(0, 4).map(post => (
                   <button
                     key={post._id}
-                    onClick={() => {
-                      setSelectedPost(post);
-                      const url = new URL(window.location);
-                      url.searchParams.set('post', post.slug?.current || post._id || post.id);
-                      window.history.pushState({}, '', url);
-                    }}
+                    onClick={() => handleSelectPost(post)}
                     className="w-full text-left flex items-start gap-2.5 group"
                   >
                     <span className="text-lg flex-shrink-0">🦎</span>
