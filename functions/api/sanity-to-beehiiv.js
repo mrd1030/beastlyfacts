@@ -1,6 +1,25 @@
 // functions/api/sanity-to-beehiiv.js
 import { toHTML } from '@portabletext/to-html';
 
+// Your Sanity Project ID from your studio setup
+const SANITY_PROJECT_ID = '7nqbs1gk'; 
+const DATASET = 'production';
+
+// Helper function to turn Sanity asset references into real, public CDN images
+function buildSanityImageUrl(assetRef) {
+  if (!assetRef) return '';
+  
+  // Example assetRef: "image-77ca5147822bd5bf59e21971f114c029ca981358-1200x800-jpg"
+  const parts = assetRef.split('-');
+  if (parts.length < 4) return '';
+  
+  const id = parts[1];
+  const dimensions = parts[2];
+  const extension = parts[3];
+  
+  return `https://cdn.sanity.io/images/${SANITY_PROJECT_ID}/${DATASET}/${id}-${dimensions}.${extension}`;
+}
+
 const myCustomComponents = {
   types: {
     // 1. Map affiliateDisclosure schema exactly
@@ -32,14 +51,24 @@ const myCustomComponents = {
       `;
     },
 
-    // 3. Map productRecommendation schema exactly
+    // 3. Map productRecommendation schema exactly (Now with Auto-Image rendering!)
     productRecommendation: ({ value }) => {
       const stars = value.rating ? '⭐'.repeat(Math.round(value.rating)) : '';
+      
+      // Auto-extract and build the URL if an image was uploaded to the block
+      const assetRef = value.image?.asset?._ref;
+      const imageUrl = buildSanityImageUrl(assetRef);
+      
+      const productImageHtml = imageUrl 
+        ? `<div style="text-align: center; margin-bottom: 16px;"><img src="${imageUrl}" alt="${value.productName}" style="max-width: 150px; height: auto; border-radius: 6px; display: inline-block;" /></div>`
+        : '';
+
       return `
         <div style="border: 1px solid #e0e0e0; border-top: 4px solid #ff9900; border-radius: 8px; padding: 20px; margin: 24px 0; font-family: sans-serif; background-color: #fff;">
-          <h3 style="margin-top: 0; color: #111; font-size: 18px;">${value.productName}</h3>
+          ${productImageHtml}
+          <h3 style="margin-top: 0; color: #111; font-size: 18px; text-align: center;">${value.productName}</h3>
           
-          <p style="font-size: 13px; color: #666; margin: 6px 0 14px 0;">
+          <p style="font-size: 13px; color: #666; margin: 6px 0 14px 0; text-align: center;">
             ${value.bestFor ? `<strong>Best For:</strong> ${value.bestFor} ` : ''}
             ${value.priceRange ? ` | <strong>Price:</strong> ${value.priceRange}` : ''}
             ${stars ? ` | <strong>Rating:</strong> ${stars}` : ''}
@@ -56,7 +85,7 @@ const myCustomComponents = {
       `;
     },
 
-    // 4. Map comparisonTable schema exactly (Headers + Rows)
+    // 4. Map comparisonTable schema exactly
     comparisonTable: ({ value }) => {
       const tableHeaders = value.headers?.map(header => `
         <th style="padding: 12px; border: 1px solid #ddd; background-color: #f4f4f4; text-align: left; font-size: 14px; font-weight: bold;">${header}</th>
@@ -78,6 +107,14 @@ const myCustomComponents = {
           </table>
         </div>
       `;
+    },
+    
+    // 5. Render standard inline images inside your text body blocks automatically
+    image: ({ value }) => {
+      const assetRef = value?.asset?._ref;
+      const imageUrl = buildSanityImageUrl(assetRef);
+      if (!imageUrl) return '';
+      return `<p style="text-align: center; margin: 20px 0;"><img src="${imageUrl}" alt="${value.alt || 'Article Image'}" style="max-width: 100%; height: auto; border-radius: 6px;" /></p>`;
     }
   }
 };
@@ -89,10 +126,8 @@ export async function onRequestPost(context) {
     const payload = await request.json();
     const { title, excerpt, body, animalType, readTime } = payload;
 
-    // Convert Sanity content blocks directly into styling-sealed HTML
     let htmlBody = toHTML(body, { components: myCustomComponents });
 
-    // Prepend metadata badges nicely
     if (animalType || readTime) {
       const metaBadge = `
         <p style="font-family: sans-serif; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">
@@ -104,7 +139,6 @@ export async function onRequestPost(context) {
       htmlBody = metaBadge + htmlBody;
     }
 
-    // Wrap the inner text into a clean email container to review before copying
     const fullEmailHtml = `
       <div style="background-color: #f5f5f5; padding: 30px; font-family: sans-serif;">
         <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
@@ -117,7 +151,6 @@ export async function onRequestPost(context) {
       </div>
     `;
 
-    // Fire the message directly to your personal email via Resend API
     const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -125,8 +158,8 @@ export async function onRequestPost(context) {
         'Authorization': `Bearer ${env.RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        from: 'onboarding@resend.dev', // Default safe sandbox address
-        to: env.MY_PERSONAL_EMAIL,    // Destined for your inbox
+        from: 'onboarding@resend.dev',
+        to: env.MY_PERSONAL_EMAIL,
         subject: `📝 Newsletter Draft: ${title || 'New Post'}`,
         html: fullEmailHtml
       })
