@@ -15,7 +15,7 @@ export async function onRequestPost(context) {
     const htmlBody = toHTML(body);
 
     // 4. Set up the custom beehiiv API endpoint using your hidden Publication ID
-    const beehiivUrl = `https://api.beehiiv.com/v3/publications/${env.BEEHIIV_PUBLICATION_ID}/posts`;
+    const beehiivUrl = `https://api.beehiiv.com/v2/publications/${env.BEEHIIV_PUBLICATION_ID}/posts`;
 
     // 5. Send the formatted article payload over to beehiiv
     const beehiivResponse = await fetch(beehiivUrl, {
