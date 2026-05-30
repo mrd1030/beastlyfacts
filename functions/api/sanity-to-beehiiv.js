@@ -3,7 +3,7 @@ import { toHTML } from '@portabletext/to-html';
 
 const myCustomComponents = {
   types: {
-    // 1. Map your affiliateDisclosure schema exactly
+    // 1. Map affiliateDisclosure schema exactly
     affiliateDisclosure: ({ value }) => {
       const disclosureText = value.text || 'As an Amazon Associate, I earn from qualifying purchases. This helps support BeastlyFacts at no extra cost to you.';
       return `
@@ -13,13 +13,13 @@ const myCustomComponents = {
       `;
     },
 
-    // 2. Map your prosCons schema exactly
+    // 2. Map prosCons schema exactly
     prosCons: ({ value }) => {
       const prosList = value.pros?.map(pro => `<li style="margin-bottom: 6px; color: #2e7d32;">✔️ ${pro}</li>`).join('') || '';
       const consList = value.cons?.map(con => `<li style="margin-bottom: 6px; color: #c62828;">❌ ${con}</li>`).join('') || '';
       
       return `
-        <div style="margin: 20px 0; font-family: sans-serif; display: table; width: 100%;">
+        <div style="margin: 20px 0; font-family: sans-serif;">
           <div style="background-color: #e8f5e9; padding: 14px; border-radius: 6px; margin-bottom: 12px;">
             <strong style="color: #1b5e20; font-size: 15px;">What We Like (Pros):</strong>
             <ul style="list-style: none; padding-left: 0; margin: 8px 0 0 0; font-size: 14px;">${prosList}</ul>
@@ -32,7 +32,7 @@ const myCustomComponents = {
       `;
     },
 
-    // 3. Map your productRecommendation schema exactly
+    // 3. Map productRecommendation schema exactly
     productRecommendation: ({ value }) => {
       const stars = value.rating ? '⭐'.repeat(Math.round(value.rating)) : '';
       return `
@@ -56,14 +56,12 @@ const myCustomComponents = {
       `;
     },
 
-    // 4. Map your comparisonTable schema exactly (Headers + Rows)
+    // 4. Map comparisonTable schema exactly (Headers + Rows)
     comparisonTable: ({ value }) => {
-      // Build headers string
       const tableHeaders = value.headers?.map(header => `
         <th style="padding: 12px; border: 1px solid #ddd; background-color: #f4f4f4; text-align: left; font-size: 14px; font-weight: bold;">${header}</th>
       `).join('') || '';
 
-      // Build rows and cells string
       const tableRows = value.rows?.map(rowItem => {
         const rowCells = rowItem.cells?.map(cell => `
           <td style="padding: 10px; border: 1px solid #ddd; font-size: 13px; color: #333;">${cell}</td>
@@ -74,7 +72,7 @@ const myCustomComponents = {
       return `
         <div style="overflow-x: auto; margin: 24px 0; font-family: sans-serif;">
           ${value.title ? `<strong style="font-size: 16px; display: block; margin-bottom: 8px; color: #111;">${value.title}</strong>` : ''}
-          <table style="width: 100%; border-collapse: collapse; min-width: 400px;">
+          <table style="width: 100%; border-collapse: collapse;">
             <thead><tr>${tableHeaders}</tr></thead>
             <tbody>${tableRows}</tbody>
           </table>
@@ -91,10 +89,10 @@ export async function onRequestPost(context) {
     const payload = await request.json();
     const { title, excerpt, body, animalType, readTime } = payload;
 
-    // Convert Sanity blocks directly into our parsed HTML content structures
+    // Convert Sanity content blocks directly into styling-sealed HTML
     let htmlBody = toHTML(body, { components: myCustomComponents });
 
-    // Inject animalType & readTime badges cleanly above the post block text
+    // Prepend metadata badges nicely
     if (animalType || readTime) {
       const metaBadge = `
         <p style="font-family: sans-serif; font-size: 12px; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 16px;">
@@ -106,30 +104,41 @@ export async function onRequestPost(context) {
       htmlBody = metaBadge + htmlBody;
     }
 
-    // Connect securely to beehiiv v2 API route endpoints
-    const beehiivUrl = `https://api.beehiiv.com/v2/publications/${env.BEEHIIV_PUBLICATION_ID}/posts`;
+    // Wrap the inner text into a clean email container to review before copying
+    const fullEmailHtml = `
+      <div style="background-color: #f5f5f5; padding: 30px; font-family: sans-serif;">
+        <div style="max-width: 600px; background-color: #ffffff; padding: 30px; margin: 0 auto; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+          <h1 style="color: #111; font-size: 26px; margin-top: 0; margin-bottom: 6px;">${title || 'Untitled Post'}</h1>
+          <p style="font-size: 16px; color: #555; font-style: italic; margin-top: 0; margin-bottom: 24px;">${excerpt || ''}</p>
+          <div style="line-height: 1.6; color: #222;">
+            ${htmlBody}
+          </div>
+        </div>
+      </div>
+    `;
 
-    const beehiivResponse = await fetch(beehiivUrl, {
+    // Fire the message directly to your personal email via Resend API
+    const resendResponse = await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${env.BEEHIIV_API_KEY}`
+        'Authorization': `Bearer ${env.RESEND_API_KEY}`
       },
       body: JSON.stringify({
-        title: title,
-        subtitle: excerpt,
-        body: htmlBody,
-        status: 'draft'
+        from: 'onboarding@resend.dev', // Default safe sandbox address
+        to: env.MY_PERSONAL_EMAIL,    // Destined for your inbox
+        subject: `📝 Newsletter Draft: ${title || 'New Post'}`,
+        html: fullEmailHtml
       })
     });
 
-    if (!beehiivResponse.ok) {
-      const errorData = await beehiivResponse.json();
+    if (!resendResponse.ok) {
+      const errorData = await resendResponse.json();
       return new Response(JSON.stringify({ success: false, error: errorData }), { status: 400 });
     }
 
-    const data = await beehiivResponse.json();
-    return new Response(JSON.stringify({ success: true, message: 'Draft synced successfully!', data }), { status: 200 });
+    const data = await resendResponse.json();
+    return new Response(JSON.stringify({ success: true, message: 'Email draft sent successfully!', data }), { status: 200 });
 
   } catch (error) {
     return new Response(JSON.stringify({ success: false, error: error.message }), { status: 500 });
