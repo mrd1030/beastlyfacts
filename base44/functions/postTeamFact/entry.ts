@@ -35,10 +35,6 @@ const teamFacts = [
 Deno.serve(async (req) => {
   try {
     const base44 = createClientFromRequest(req);
-    const user = await base44.auth.me();
-    if (!user || user.role !== 'admin') {
-      return Response.json({ error: 'Forbidden' }, { status: 403 });
-    }
 
     // Rotate through team facts based on the day of the year
     const now = new Date();
